@@ -64,7 +64,7 @@ Layout: CSS grid, rows auto and minmax(0,1fr), so the header is fixed and the co
 
 ## Last successfully completed prompt
 
-- Prompt 4: Application layout and responsive navigation (verified)
+- Prompt 4: Application layout and responsive navigation (verified, commit 2c236f5)
 
 ## Prompt status
 
@@ -73,39 +73,38 @@ Layout: CSS grid, rows auto and minmax(0,1fr), so the header is fixed and the co
 | 1      | Project Setup and UI Foundation              | Completed | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed. Developer reports no console errors.                                                                                                                                                                                      |
 | 2      | Install styling and UI kit                   | Completed | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed (CSS 19.08 kB, JS 184.75 kB). Dev server visual check passed. Committed as 8bc208f and pushed.                                                                                                                |
 | 3      | Routing and global state scaffolding         | Completed | react-router 7.13.0 and zustand 5.0.3 installed with 0 vulnerabilities and 0 peer warnings. Typecheck, lint and build (CSS 19.84 kB, JS 286.47 kB) passed. All 8 routes, the 404 page, back/forward, sidebar toggle and toast queue checked in the browser with a clean console. Committed as fcfdf57 and pushed. |
-| 4      | Application layout and responsive navigation | Completed | shadcn Sheet added. AppShell (CSS grid), Header, SideNav, and MobileDrawer created. Typecheck, lint, build (CSS 22.67 kB, JS 327.56 kB) and responsive checks passed.                                                                                                                                             |
+| 4      | Application layout and responsive navigation | Completed | shadcn Sheet added. AppShell (CSS grid), Header, SideNav and MobileDrawer created. Typecheck, lint and build (CSS 22.67 kB, JS 327.56 kB) passed. Responsive, focus trap, Escape, route-change close, resize close and no-horizontal-overflow checks passed. Committed as 2c236f5 and pushed.                     |
 
 ## Features implemented
 
 - Prompt 1: Default scaffold page, strict TypeScript, ESLint with engine-isolation rule, Prettier with format and format:check scripts.
 - Prompt 2: Tailwind utility classes and CSS design tokens (background, foreground, muted, accent, border, plus card, popover, primary, secondary, destructive, input, ring and radius). Dark-mode token set defined under the .dark class (no toggle yet). shadcn/ui components generated as owned files.
 - Prompt 3: Client-side routing for eight sections plus a 404 page, inside the app shell. Zustand UI store with sidebar state, active route and toast queue, exposed through typed hooks. Toasts do not auto-dismiss.
-- Prompt 4: Grid-based app shell with a header (app name, mobile drawer button, desktop sidebar toggle, theme placeholder button that does nothing yet). Side navigation with the eight sections in the required order, visible from 768px. Below 768px, navigation is a left-side Sheet drawer with focus trapping and Escape to close. The drawer closes on route change and when the window widens to desktop. Sidebar and main area scroll independently. Visible focus rings on nav links and buttons. Animations are disabled under prefers-reduced-motion. The toast viewport moved into the shell.
+- Prompt 4: Grid-based app shell with a header (app name, mobile drawer button, desktop sidebar toggle, theme placeholder button that does nothing yet). Side navigation with the eight sections in the required order, visible from 768px. Below 768px, navigation is a left-side Sheet drawer with focus trapping and Escape to close. The drawer closes on route change and when the window widens to desktop. Sidebar and main area scroll independently. Visible focus rings on nav links and buttons. Animations are disabled under prefers-reduced-motion. The toast viewport lives in the shell.
 
 ## Files created
 
 - Prompt 1 (commit 35bbe5b): package.json, tsconfig.json, vite.config.ts, eslint.config.js, .prettierrc, .prettierignore, .gitignore, index.html, README.md, src/main.tsx, src/index.css, src/vite-env.d.ts, src/app/App.tsx, src/engine/index.ts, src/types/index.ts, and .gitkeep files.
 - Prompt 2 (commit 8bc208f): tailwind.config.ts, postcss.config.js, components.json, src/lib/utils.ts, src/lib/icons.ts, src/components/ui/button.tsx, card.tsx, input.tsx, textarea.tsx, select.tsx, slider.tsx, dialog.tsx, dropdown-menu.tsx, tooltip.tsx.
 - Prompt 3 (commit fcfdf57): src/types/ui.ts, src/store/uiStore.ts, src/store/index.ts, src/app/router.tsx, src/app/NotFoundPage.tsx, src/components/PlaceholderPage.tsx.
-- Prompt 4: src/components/ui/sheet.tsx (CLI-generated), src/lib/navItems.ts, src/components/layout/AppShell.tsx, Header.tsx, SideNav.tsx, MobileDrawer.tsx.
+- Prompt 4 (commit 2c236f5): src/components/ui/sheet.tsx (CLI-generated), src/lib/navItems.ts, src/components/layout/AppShell.tsx, Header.tsx, SideNav.tsx, MobileDrawer.tsx.
 
 ## Files modified
 
 - Prompt 2: src/index.css, src/app/App.tsx, tsconfig.json, vite.config.ts, eslint.config.js, package.json, package-lock.json.
 - Prompt 3: src/main.tsx (renders RouterProvider), src/app/App.tsx (app shell), src/types/index.ts (re-exports ui types), src/lib/icons.ts, package.json and package-lock.json.
-- Prompt 4: src/types/ui.ts (added mobileNavOpen and setMobileNavOpen), src/store/uiStore.ts (same), src/store/index.ts (added useMobileNavOpen and useSetMobileNavOpen), src/index.css (added reduced-motion rule), src/app/App.tsx (now renders AppShell), src/lib/icons.ts (added Moon). Removed from the header: the "Route:" debug text and the "Send test toast" button. The toast viewport still works and now lives in AppShell.
-- Prompt 4 renamed nav labels to "Handwriting Profiles", "Paper Designer" and "PDF Tools".
+- Prompt 4: src/types/ui.ts (added mobileNavOpen and setMobileNavOpen), src/store/uiStore.ts (same), src/store/index.ts (added useMobileNavOpen and useSetMobileNavOpen), src/index.css (added reduced-motion rule), src/app/App.tsx (now renders AppShell), src/lib/icons.ts (added Moon). Removed from the header: the "Route:" debug text and the "Send test toast" button. The toast viewport still works and now lives in AppShell. Nav labels renamed to "Handwriting Profiles", "Paper Designer" and "PDF Tools".
 
 ## Latest results (as supplied by developer)
 
 - Prompt 1 typecheck: PASS. Lint: PASS. Build: PASS. Dev server: PASS.
 - Prompt 2 shadcn CLI: PASS (9 files created). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 19.08 kB, JS 184.75 kB). Dev server visual check: PASS.
 - Prompt 3 install: PASS (react-router 7.13.0, zustand 5.0.3, 0 vulnerabilities, 0 peer warnings). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 19.84 kB, JS 286.47 kB). Browser checks: PASS.
-- Prompt 4 shadcn CLI: PASS (src/components/ui/sheet.tsx created).
+- Prompt 4 shadcn CLI: PASS (src/components/ui/sheet.tsx created, 1 file).
 - Prompt 4 typecheck: PASS (tsc --noEmit, exit code 0).
 - Prompt 4 lint: PASS (eslint ., exit code 0).
-- Prompt 4 build: PASS (tsc --noEmit && vite build, CSS 22.67 kB, JS 327.56 kB, exit code 0).
-- Prompt 4 browser checks: PASS (desktop side nav toggle, mobile drawer focus trapping and escape/navigation close, media query resize close, focus rings, no horizontal overflow, console clean).
+- Prompt 4 build: PASS (tsc --noEmit && vite build, 2215 modules, CSS 22.67 kB, JS 327.56 kB, exit code 0).
+- Prompt 4 browser checks: PASS. Desktop sidebar shows all eight items in order and the toggle hides and shows it. At 375px the sidebar is hidden, the menu button opens a left drawer, Escape closes it, selecting a link closes it and navigates, there is no horizontal scrollbar, focus stays trapped in the drawer, resizing past 768px closes it, focus rings are visible, and the console is clean.
 
 ## Known bugs and unresolved issues
 
@@ -130,9 +129,10 @@ Layout: CSS grid, rows auto and minmax(0,1fr), so the header is fixed and the co
 - tailwind.config.ts is not in tsconfig include, so type checking does not cover it. ESLint still lints it.
 - react-router v7 is imported from the 'react-router' package, not 'react-router-dom'. Use createBrowserRouter and RouterProvider from 'react-router'.
 - Zustand selectors return a single value or a stable action function each, never a new object. This avoids re-render loops in Zustand v5.
-- Breakpoint: 768px (Tailwind md) separates desktop sidebar from mobile drawer. The app uses the same breakpoint in the matchMedia query in AppShell.
+- Breakpoint: 768px (Tailwind md) separates desktop sidebar from mobile drawer. AppShell uses the same breakpoint in its matchMedia query.
 - Drawer open state is mobileNavOpen in uiStore. sidebarOpen only controls the desktop sidebar.
 - Each route renders a PlaceholderPage. Each later phase replaces its placeholder with a real feature component under src/features.
+- Prompts 2 to 4 were verified from written descriptions of the browser output rather than screenshots. If a later prompt depends on exact layout, ask for a screenshot.
 
 ## Exact next prompt number
 
