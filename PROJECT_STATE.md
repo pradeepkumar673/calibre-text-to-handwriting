@@ -71,7 +71,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 
 ## Last successfully completed prompt
 
-- Prompt 5: Theme management (verified)
+- Prompt 5: Theme management (verified, commit 962ecb7)
 
 ## Prompt status
 
@@ -81,7 +81,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 | 2      | Install styling and UI kit                   | Completed | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed (CSS 19.08 kB, JS 184.75 kB). Dev server visual check passed. Committed as 8bc208f and pushed.                                                                                                                |
 | 3      | Routing and global state scaffolding         | Completed | react-router 7.13.0 and zustand 5.0.3 installed with 0 vulnerabilities and 0 peer warnings. Typecheck, lint and build (CSS 19.84 kB, JS 286.47 kB) passed. All 8 routes, the 404 page, back/forward, sidebar toggle and toast queue checked in the browser with a clean console. Committed as fcfdf57 and pushed. |
 | 4      | Application layout and responsive navigation | Completed | shadcn Sheet added. AppShell (CSS grid), Header, SideNav and MobileDrawer created. Typecheck, lint and build (CSS 22.67 kB, JS 327.56 kB) passed. Responsive, focus trap, Escape, route-change close, resize close and no-horizontal-overflow checks passed. Committed as 2c236f5 and pushed.                     |
-| 5      | Theme management                             | Completed | Inline pre-paint script, themeStore, ThemeSelect, SettingsPage, router update and color-scheme CSS configured. Typecheck, lint, build (CSS 23.50 kB, JS 390.14 kB) and theme persistence/OS-follow checks passed.                                                                                                 |
+| 5      | Theme management                             | Completed | Inline pre-paint script, themeStore, ThemeSelect, SettingsPage, router update and color-scheme CSS. Typecheck, lint, build (CSS 23.50 kB, JS 390.14 kB) passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7 and pushed.                                                  |
 
 ## Features implemented
 
@@ -97,7 +97,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 2 (commit 8bc208f): tailwind.config.ts, postcss.config.js, components.json, src/lib/utils.ts, src/lib/icons.ts, src/components/ui/button.tsx, card.tsx, input.tsx, textarea.tsx, select.tsx, slider.tsx, dialog.tsx, dropdown-menu.tsx, tooltip.tsx.
 - Prompt 3 (commit fcfdf57): src/types/ui.ts, src/store/uiStore.ts, src/store/index.ts, src/app/router.tsx, src/app/NotFoundPage.tsx, src/components/PlaceholderPage.tsx.
 - Prompt 4 (commit 2c236f5): src/components/ui/sheet.tsx (CLI-generated), src/lib/navItems.ts, src/components/layout/AppShell.tsx, Header.tsx, SideNav.tsx, MobileDrawer.tsx.
-- Prompt 5: src/store/themeStore.ts, src/features/settings/ThemeSelect.tsx, src/features/settings/SettingsPage.tsx.
+- Prompt 5 (commit 962ecb7): src/store/themeStore.ts, src/features/settings/ThemeSelect.tsx, src/features/settings/SettingsPage.tsx.
 
 ## Files modified
 
@@ -111,11 +111,8 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 1 typecheck: PASS. Lint: PASS. Build: PASS. Dev server: PASS.
 - Prompt 2 shadcn CLI: PASS (9 files created). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 19.08 kB, JS 184.75 kB). Dev server visual check: PASS.
 - Prompt 3 install: PASS (react-router 7.13.0, zustand 5.0.3, 0 vulnerabilities, 0 peer warnings). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 19.84 kB, JS 286.47 kB). Browser checks: PASS.
-- Prompt 4 shadcn CLI: PASS (src/components/ui/sheet.tsx created, 1 file). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 22.67 kB, JS 327.56 kB). Browser checks: PASS.
-- Prompt 5 typecheck: PASS (tsc --noEmit, exit code 0).
-- Prompt 5 lint: PASS (eslint ., exit code 0).
-- Prompt 5 build: PASS (tsc --noEmit && vite build, CSS 23.50 kB, JS 390.14 kB, exit code 0).
-- Prompt 5 browser checks: PASS (Settings page renders Appearance card with ThemeSelect showing System by default; switching to Dark/Light toggles .dark class and color-scheme immediately without white flash on reload; localStorage key calligraphewrite-theme persists value; System mode follows prefers-color-scheme; console clean).
+- Prompt 4 shadcn CLI: PASS (sheet.tsx created). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 22.67 kB, JS 327.56 kB). Browser checks: PASS.
+- Prompt 5 typecheck: PASS. Lint: PASS. Build: PASS (CSS 23.50 kB, JS 390.14 kB). Browser checks: PASS (System default, Dark and Light persist across reload with no white flash, localStorage key correct, System follows prefers-color-scheme, contrast readable in both themes, console clean).
 
 ## Known bugs and unresolved issues
 
