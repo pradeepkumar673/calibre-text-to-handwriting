@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router';
 import PlaceholderPage from '@/components/PlaceholderPage';
+import SettingsPage from '@/features/settings/SettingsPage';
 import App from './App';
 import NotFoundPage from './NotFoundPage';
 
@@ -69,9 +70,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'settings',
-        element: (
-          <PlaceholderPage title="Settings" description="Preferences for the app and exports." />
-        ),
+        element: <SettingsPage />,
       },
       {
         path: '*',

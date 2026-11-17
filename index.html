@@ -4,6 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CalligrapheWrite</title>
+    <script>
+      // Runs synchronously before first paint, so the page never flashes the wrong theme.
+      // Reads the saved preference and adds the "dark" class to <html> when dark mode applies.
+      // The storage key must match THEME_STORAGE_KEY in src/store/themeStore.ts.
+      (function () {
+        try {
+          var stored = window.localStorage.getItem('calligraphewrite-theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var isDark = stored === 'dark' || (stored !== 'light' && prefersDark);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {
+          // Storage or matchMedia unavailable: stay in light mode.
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
