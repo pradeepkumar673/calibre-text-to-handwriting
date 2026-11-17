@@ -5,13 +5,13 @@
 - Name: CalligrapheWrite
 - Purpose: A local-first web app that converts pasted text into realistic handwritten pages, with paper, ink, pen, spacing and imperfection controls, a preloaded or personal handwriting profile, an editor, PDF and PNG export, and editing of existing handwritten PDFs.
 - Constraints: No mandatory backend, authentication, MongoDB, Firebase, Cloudinary, paid APIs or cloud AI. Must run locally and deploy as a static site.
-- Repository: GitHub, branch master.
-- Local folder name in the uploaded ZIP: `calibre text to handwriting/`. Earlier documentation called the root `calligraphewrite/`. Use the name on your own machine in terminal commands.
+- Repository: GitHub (https://github.com/pradeepkumar673/calibre-text-to-handwriting), branch master.
+- Developer machine: Windows. Local folder name: `calibre text to handwriting`.
 
 ## Technology stack
 
 - Planned: React, Vite, TypeScript, Tailwind CSS, shadcn/ui, Lucide React, Zustand, HTML Canvas API, SVG, Konva.js, PDF.js, pdf-lib, KaTeX, IndexedDB, Web Workers, OpenCV.js.
-- Installed (from package-lock.json before Prompt 7):
+- Installed (from package-lock.json):
   - react 18.3.1, react-dom 18.3.1
   - react-router 7.18.5 (imported from 'react-router')
   - zustand 5.1.0
@@ -24,13 +24,13 @@
   - typescript 5.9.3 (strict)
   - eslint 9 (flat config with typescript-eslint, react-hooks and react-refresh), prettier 3
   - @types/node 26.6.6
-- Added in Prompt 7 (pending verification): vitest 3.2.7, jsdom 26.1, @testing-library/react 16.3.3, @testing-library/dom 10.4.2, @playwright/test 1.65.1.
+  - Test tooling (Prompt 7): vitest 3.2.7, jsdom 26.1, @testing-library/react 16.3.3, @testing-library/dom 10.4.2, @playwright/test 1.65.1
 - Not yet installed: Konva.js, PDF.js, pdf-lib, KaTeX, OpenCV.js. Deferred to later phases.
 
 ## Current architecture and folder structure
 
 ```
-calligraphewrite/   (local folder name may differ, see Project overview)
+calibre text to handwriting/   (project root)
   index.html               (inline pre-paint theme script in head)
   package.json, package-lock.json, tsconfig.json, vite.config.ts (includes Vitest config),
   eslint.config.js, tailwind.config.ts, postcss.config.js, components.json,
@@ -74,20 +74,21 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 
 ## Last successfully completed prompt
 
-- Prompt 6: Placeholder pages and empty states (verified, commit cc1056a)
-- Housekeeping after Prompt 6 (developer-verified, commit e0492ab). Not a numbered prompt.
+- Prompt 7: Verification checkpoint 1, testing setup and foundation review (verified, commit 640d62b)
 
 ## Prompt status
 
-| Prompt | Title                                                          | Status       | Reason                                                                                                                                                                                                                       |
-| ------ | -------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1      | Project Setup and UI Foundation                                | Completed    | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed.                                                                                                                                      |
-| 2      | Install styling and UI kit                                     | Completed    | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed. Committed as 8bc208f.                                                                                                   |
-| 3      | Routing and global state scaffolding                           | Completed    | react-router and zustand installed. Typecheck, lint, build passed. Browser checks passed. Committed as fcfdf57.                                                                                                              |
-| 4      | Application layout and responsive navigation                   | Completed    | Typecheck, lint, build passed. Responsive, focus trap, Escape, route-change close checks passed. Committed as 2c236f5.                                                                                                       |
-| 5      | Theme management                                               | Completed    | Typecheck, lint, build passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7.                                                                                                         |
-| 6      | Placeholder pages and empty states                             | Completed    | Typecheck, lint, build passed. Browser checks passed. Committed as cc1056a.                                                                                                                                                  |
-| 7      | Verification checkpoint 1: testing setup and foundation review | Not Verified | Code generated. Awaiting developer output for npm run build, npm run lint, npm test and npm run test:e2e. Sandbox runs passed for typecheck, lint, format, build and 9 unit tests, but these do not count toward acceptance. |
+| Prompt | Title                                                          | Status    | Reason                                                                                                                                                                                                 |
+| ------ | -------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1      | Project Setup and UI Foundation                                | Completed | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed.                                                                                                                |
+| 2      | Install styling and UI kit                                     | Completed | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed. Committed as 8bc208f.                                                                             |
+| 3      | Routing and global state scaffolding                           | Completed | react-router and zustand installed. Typecheck, lint, build passed. Browser checks passed. Committed as fcfdf57.                                                                                        |
+| 4      | Application layout and responsive navigation                   | Completed | Typecheck, lint, build passed. Responsive, focus trap, Escape, route-change close checks passed. Committed as 2c236f5.                                                                                 |
+| 5      | Theme management                                               | Completed | Typecheck, lint, build passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7.                                                                                   |
+| 6      | Placeholder pages and empty states                             | Completed | Typecheck, lint, build passed. Browser checks passed. Committed as cc1056a.                                                                                                                            |
+| 7      | Verification checkpoint 1: testing setup and foundation review | Completed | Developer pasted passing output: format:check, typecheck, lint, build (CSS 23.68 kB, JS 394.55 kB), npm test (9 of 9), npm run test:e2e (1 of 1, Chromium). Committed as 640d62b and pushed to master. |
+
+Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 
 ## Features implemented
 
@@ -97,7 +98,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 4: Grid-based app shell with header, side navigation (visible from 768px), left-side Sheet drawer below 768px with focus trap and Escape. Header theme button is a placeholder.
 - Prompt 5: Light, dark and system theme modes, persisted to localStorage. Settings page with Appearance card.
 - Prompt 6: Home page with two working links. Seven section pages each show an h1, a purpose line and a disabled CTA with a note. Settings keeps the working Appearance card.
-- Prompt 7 (pending verification): Vitest with jsdom and Testing Library, nine smoke tests (one per route), Playwright e2e test for home to editor in Chromium, `test` and `test:e2e` scripts. `appRoutes` exported from router.tsx for memory-router tests.
+- Prompt 7: Vitest with jsdom and Testing Library, nine smoke tests (one per route), Playwright e2e test for home to editor in Chromium, `test` and `test:e2e` scripts. `appRoutes` exported from router.tsx for memory-router tests.
 
 ## Files created
 
@@ -107,7 +108,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 4 (commit 2c236f5): src/components/ui/sheet.tsx, src/lib/navItems.ts, src/components/layout/AppShell.tsx, Header.tsx, SideNav.tsx, MobileDrawer.tsx.
 - Prompt 5 (commit 962ecb7): src/store/themeStore.ts, src/features/settings/ThemeSelect.tsx, src/features/settings/SettingsPage.tsx.
 - Prompt 6 (commit cc1056a): src/components/EmptyState.tsx, and seven feature pages under src/features.
-- Prompt 7 (pending commit): tests/setup.ts, tests/smoke/routes.test.tsx, tests/e2e/navigation.spec.ts, playwright.config.ts.
+- Prompt 7 (commit 640d62b): tests/setup.ts, tests/smoke/routes.test.tsx, tests/e2e/navigation.spec.ts, playwright.config.ts.
 
 ## Files modified
 
@@ -116,8 +117,8 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 4: src/types/ui.ts, src/store/uiStore.ts, src/store/index.ts, src/index.css, src/app/App.tsx, src/lib/icons.ts.
 - Prompt 5: index.html, src/index.css, src/app/router.tsx.
 - Prompt 6: src/app/router.tsx, src/features/settings/SettingsPage.tsx.
-- Housekeeping (commit e0492ab): PROJECT_STATE.md.
-- Prompt 7 (pending commit): src/app/router.tsx (exports appRoutes), vite.config.ts (Vitest block), tsconfig.json (adds playwright.config.ts and tests), eslint.config.js (ignores and test-file rule), .gitignore, .prettierignore, package.json (scripts and devDependencies), package-lock.json (regenerated).
+- Housekeeping (commit e0492ab): PROJECT_STATE.md (reformatted, versions corrected).
+- Prompt 7 (commit 640d62b): src/app/router.tsx (exports appRoutes), vite.config.ts (Vitest block), tsconfig.json (adds playwright.config.ts and tests), eslint.config.js (ignores and test-file rule), .gitignore, .prettierignore, package.json (scripts and devDependencies), package-lock.json (regenerated).
 
 ## Files deleted
 
@@ -125,29 +126,35 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 
 ## Latest results (as supplied by developer)
 
-- Housekeeping (commit e0492ab, developer-verified): format:check PASS, typecheck PASS (0 errors), lint PASS (0 warnings or errors), build PASS (CSS 23.68 kB, JS 394.55 kB).
-- Prompt 1 to 6: as recorded in the Prompt status table above.
-- Prompt 7: no developer output yet. Sandbox only (not counted): typecheck PASS, lint PASS, format:check PASS, build PASS (CSS 23.68 kB, JS 394.55 kB), unit tests PASS (9 of 9). E2E NOT RUN in sandbox.
+- Housekeeping (commit e0492ab): format:check PASS, typecheck PASS, lint PASS, build PASS (CSS 23.68 kB, JS 394.55 kB).
+- Prompt 7 (commit 640d62b, developer-supplied output):
+  - format:check: PASS
+  - typecheck: PASS (0 errors)
+  - lint: PASS (0 warnings or errors)
+  - build: PASS (CSS 23.68 kB, JS 394.55 kB)
+  - npm test: PASS, 9 of 9 tests (tests/smoke/routes.test.tsx)
+  - npm run test:e2e: PASS, 1 of 1 test (tests/e2e/navigation.spec.ts, Chromium)
+- Prompts 1 to 6: as recorded in the Prompt status table above.
 
 ## Phase 1 foundation review
 
-| #   | Item                                    | Status                                                              |
-| --- | --------------------------------------- | ------------------------------------------------------------------- |
-| 1   | Scaffold, strict TypeScript, Vite build | Pass (Prompt 1). Re-check pending developer build output.           |
-| 2   | ESLint engine-isolation, Prettier       | Pass (Prompt 1). Re-check pending developer lint and format output. |
-| 3   | Tailwind 3.4, PostCSS, shadcn/ui        | Pass (Prompt 2). Re-check pending developer build output.           |
-| 4   | Routing for 8 sections plus 404         | Pass (Prompt 3). Re-check pending developer npm test output.        |
-| 5   | Zustand UI and theme stores             | Pass (Prompts 3 and 5). Re-check pending developer npm test output. |
-| 6   | Responsive app shell and navigation     | Pass (Prompt 4). Re-check pending developer test:e2e output.        |
-| 7   | Light, dark and system theme            | Pass (Prompt 5, manual browser checks). No automated test.          |
-| 8   | Placeholder pages, one h1 each          | Pass (Prompt 6). Re-check pending developer npm test output.        |
-| 9   | Unit and smoke test tooling             | Not Verified (Prompt 7).                                            |
-| 10  | E2E test tooling (Playwright, Chromium) | Not Verified (Prompt 7).                                            |
+| #   | Item                                    | Status                                                   |
+| --- | --------------------------------------- | -------------------------------------------------------- |
+| 1   | Scaffold, strict TypeScript, Vite build | Pass (build re-verified in Prompt 7)                     |
+| 2   | ESLint engine-isolation, Prettier       | Pass (lint and format re-verified in Prompt 7)           |
+| 3   | Tailwind 3.4, PostCSS, shadcn/ui        | Pass (build re-verified in Prompt 7)                     |
+| 4   | Routing for 8 sections plus 404         | Pass (9 of 9 smoke tests)                                |
+| 5   | Zustand UI and theme stores             | Pass (smoke tests load both stores)                      |
+| 6   | Responsive app shell and navigation     | Pass (e2e navigation test, Chromium)                     |
+| 7   | Light, dark and system theme            | Pass from Prompt 5 manual checks. No automated test yet. |
+| 8   | Placeholder pages, one h1 each          | Pass (9 of 9 smoke tests)                                |
+| 9   | Unit and smoke test tooling             | Pass (Prompt 7)                                          |
+| 10  | E2E tooling (Playwright, Chromium)      | Pass (Prompt 7)                                          |
 
 ## Known bugs and unresolved issues
 
-- Prompt 7 e2e test not yet run anywhere. Chromium browser download was blocked in the sandbox.
-- No automated tests for theme switching or layout.
+- E2E test runs in Chromium only. Firefox and WebKit are not configured.
+- No automated tests for theme switching or responsive layout. Covered only by manual checks from Prompts 4 and 5.
 - Tests in tests/ are included in tsconfig, so a type error in a test fails npm run build.
 - Header theme button is a placeholder (from Prompt 4). Wire it to the theme store or remove it in a later prompt.
 - Generated shadcn files (dialog.tsx, select.tsx, sheet.tsx) import icons from 'lucide-react' directly. Only in generated files.
@@ -155,10 +162,10 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Deep links on a static host need an SPA fallback on the production host. Not configured yet.
 - Vite base is './'. Decide base '/' or not when deploying to a domain root.
 - Sidebar state and toasts are not persisted across reloads. Only the theme is persisted.
-- Developer machine is Windows. Not tested on macOS or Linux.
 - node-domexception deprecation warning comes from a transitive dependency of the shadcn CLI. Can be ignored.
 - Prompts 2 to 6 were verified from written descriptions of browser output, not screenshots.
 - Tailwind scans all of src/. A plain English word such as "table" in a source comment generates a utility class. Keep comments free of class-like words where it matters for CSS size.
+- Playwright's webServer rebuilds the app on every e2e run (npm run build, then vite preview). This adds a few seconds.
 
 ## Technical decisions and context
 
@@ -177,8 +184,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 
 ## Exact next prompt number
 
-- 7 is the current prompt and is Not Verified. Do not start Prompt 8 until the developer pastes passing output for npm run build, npm run lint, npm test and npm run test:e2e.
-- Next prompt after Prompt 7 is verified: 8.
+- Next prompt to run: 8. Prompt 8 text has not yet been supplied in this chat. The developer must paste the Prompt 8 section from the v3 guide.
 
 ## Instructions for continuing in another Claude account
 
