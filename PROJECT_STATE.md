@@ -107,7 +107,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 ## Housekeeping after Prompt 6 (not a numbered prompt)
 
 - Fixed: `npm run format:check` failed on PROJECT_STATE.md (Prettier table and blank-line formatting). This file has been reformatted and the version records corrected.
-- Status: pending the developer's own pasted output for `npm run format:check`, `npm run typecheck`, `npm run lint` and `npm run build`. Until that output is pasted, this item stays open.
+- Status: Completed. Developer pasted passing output for `npm run format:check`, `npm run typecheck`, `npm run lint` and `npm run build`. Committed as e0492ab ("Housekeeping: fix PROJECT_STATE formatting and versions") and pushed to master.
 
 ## Features implemented
 
@@ -134,7 +134,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 4: src/types/ui.ts, src/store/uiStore.ts, src/store/index.ts, src/index.css (reduced-motion rule), src/app/App.tsx (now renders AppShell), src/lib/icons.ts (added Moon). Removed from the header: the "Route:" debug text and the "Send test toast" button. Nav labels renamed to "Handwriting Profiles", "Paper Designer" and "PDF Tools".
 - Prompt 5: index.html (inline pre-paint theme script, added to head), src/index.css (color-scheme declarations on :root and .dark), src/app/router.tsx (settings route now renders SettingsPage).
 - Prompt 6: src/app/router.tsx (every route now renders its feature page, not PlaceholderPage), src/features/settings/SettingsPage.tsx (adds h1, purpose line and empty-state panel).
-- Housekeeping after Prompt 6: PROJECT_STATE.md (reformatted, versions corrected).
+- Housekeeping after Prompt 6: PROJECT_STATE.md (reformatted, versions corrected, commit e0492ab).
 
 ## Files deleted
 
@@ -148,7 +148,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 4 shadcn CLI: PASS (sheet.tsx created). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 22.67 kB, JS 327.56 kB). Browser checks: PASS.
 - Prompt 5 typecheck: PASS. Lint: PASS. Build: PASS (CSS 23.50 kB, JS 390.14 kB). Browser checks: PASS.
 - Prompt 6 typecheck: PASS. Lint: PASS. Build: PASS (CSS 23.68 kB, JS 394.55 kB). Browser checks: PASS (one h1 per page, all 9 paths return 200, home links navigate, disabled CTAs with notes, light and dark legibility, console free of errors and warnings).
-- Housekeeping (assistant run in a sandbox copy of the ZIP, not yet confirmed by developer): npm ci passed, typecheck PASS, lint PASS, build PASS (CSS 23.68 kB, JS 394.55 kB). format:check failed on PROJECT_STATE.md only; fixed in this file.
+- Housekeeping (developer-confirmed, commit e0492ab): format:check PASS, typecheck PASS (0 errors), lint PASS (0 warnings or errors), build PASS (CSS 23.68 kB, JS 394.55 kB).
 
 ## Known bugs and unresolved issues
 
