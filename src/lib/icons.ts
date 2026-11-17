@@ -8,6 +8,7 @@ export {
   Home,
   LayoutTemplate,
   Menu,
+  Moon,
   Pencil,
   Redo2,
   Ruler,

@@ -7,6 +7,7 @@ let nextToastId = 1;
 
 const initialState: UiStateSlice = {
   sidebarOpen: true,
+  mobileNavOpen: false,
   activeRoute: '/',
   toasts: [],
 };
@@ -17,6 +18,8 @@ export const useUiStore = create<UiStore>()((set) => ({
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
 
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+
+  setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
 
   setActiveRoute: (route) => set({ activeRoute: route }),
 

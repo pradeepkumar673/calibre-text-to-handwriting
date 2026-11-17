@@ -5,11 +5,13 @@ import { useUiStore } from './uiStore';
 export { useUiStore } from './uiStore';
 
 export const useSidebarOpen = () => useUiStore((state) => state.sidebarOpen);
+export const useMobileNavOpen = () => useUiStore((state) => state.mobileNavOpen);
 export const useActiveRoute = () => useUiStore((state) => state.activeRoute);
 export const useToasts = () => useUiStore((state) => state.toasts);
 
 export const useToggleSidebar = () => useUiStore((state) => state.toggleSidebar);
 export const useSetSidebarOpen = () => useUiStore((state) => state.setSidebarOpen);
+export const useSetMobileNavOpen = () => useUiStore((state) => state.setMobileNavOpen);
 export const useSetActiveRoute = () => useUiStore((state) => state.setActiveRoute);
 export const usePushToast = () => useUiStore((state) => state.pushToast);
 export const useDismissToast = () => useUiStore((state) => state.dismissToast);

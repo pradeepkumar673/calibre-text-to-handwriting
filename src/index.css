@@ -63,3 +63,11 @@
     min-height: 100vh;
   }
 }
+
+/* Respect reduced motion: drawer and dialog open and close instantly instead of animating. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .animate-out {
+    animation: none !important;
+  }
+}
