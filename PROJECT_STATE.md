@@ -11,7 +11,7 @@
 ## Technology stack
 
 - Planned: React, Vite, TypeScript, Tailwind CSS, shadcn/ui, Lucide React, Zustand, HTML Canvas API, SVG, Konva.js, PDF.js, pdf-lib, KaTeX, IndexedDB, Web Workers, OpenCV.js.
-- Installed versions (taken from package-lock.json, lockfileVersion 3):
+- Installed (from package-lock.json before Prompt 7):
   - react 18.3.1, react-dom 18.3.1
   - react-router 7.18.5 (imported from 'react-router')
   - zustand 5.1.0
@@ -24,168 +24,161 @@
   - typescript 5.9.3 (strict)
   - eslint 9 (flat config with typescript-eslint, react-hooks and react-refresh), prettier 3
   - @types/node 26.6.6
-- Correction: earlier versions of this file listed react-router 7.13.0, zustand 5.0.3, TypeScript 5.6 and Vite 6. Those were the versions at the time of each prompt's report. The lockfile now shows the versions above. The package.json ranges are caret ranges, so later installs can move them. Keep the lockfile committed.
+- Added in Prompt 7 (pending verification): vitest 3.2.7, jsdom 26.1, @testing-library/react 16.3.3, @testing-library/dom 10.4.2, @playwright/test 1.65.1.
 - Not yet installed: Konva.js, PDF.js, pdf-lib, KaTeX, OpenCV.js. Deferred to later phases.
-- No test framework is installed (no Vitest, no test script). See Known bugs.
 
 ## Current architecture and folder structure
 
 ```
 calligraphewrite/   (local folder name may differ, see Project overview)
   index.html               (inline pre-paint theme script in head)
-  package.json, package-lock.json, tsconfig.json, vite.config.ts, eslint.config.js,
-  tailwind.config.ts, postcss.config.js, components.json,
-  .prettierrc, .prettierignore, .gitignore, README.md
+  package.json, package-lock.json, tsconfig.json, vite.config.ts (includes Vitest config),
+  eslint.config.js, tailwind.config.ts, postcss.config.js, components.json,
+  playwright.config.ts, .prettierrc, .prettierignore, .gitignore, README.md
   src/
     main.tsx                 (renders RouterProvider with the router)
     index.css                (Tailwind directives, shadcn tokens, color-scheme per theme, reduced-motion rule)
     vite-env.d.ts
     app/
       App.tsx                (renders AppShell)
-      router.tsx             (createBrowserRouter: 8 sections + 404, children of App)
+      router.tsx             (exports appRoutes and the browser router built from it)
       NotFoundPage.tsx
     engine/index.ts          (must not import React; enforced by ESLint rule)
     types/
-      index.ts               (re-exports type modules)
-      ui.ts                  (UI slice state, actions, Toast types)
+      index.ts, ui.ts
     store/
-      index.ts               (typed UI store hooks, one per value or action)
-      uiStore.ts             (Zustand UI slice)
-      themeStore.ts          (Zustand theme slice, persisted to localStorage key calligraphewrite-theme)
+      index.ts, uiStore.ts, themeStore.ts
     components/
       ui/                    (shadcn/ui owned source files: button, card, input, textarea, select, slider, dialog, dropdown-menu, tooltip, sheet)
-      layout/
-        AppShell.tsx         (CSS grid shell, route sync, drawer close on route change, toast viewport)
-        Header.tsx           (app name, drawer button for mobile, sidebar toggle for desktop, theme placeholder button)
-        SideNav.tsx          (NavLink list, used in sidebar and drawer)
-        MobileDrawer.tsx     (Sheet from the left below 768px)
-      EmptyState.tsx         (shared empty-state panel built on shadcn Card)
+      layout/                (AppShell, Header, SideNav, MobileDrawer)
+      EmptyState.tsx
     features/
-      home/HomePage.tsx            (intro and Open Generator / Handwriting Profiles links)
-      generator/GeneratorPage.tsx  (empty state, CTA disabled)
-      editor/EditorPage.tsx        (empty state, CTA disabled)
-      profiles/ProfilesPage.tsx    (empty state, CTA disabled)
-      paper/PaperDesignerPage.tsx  (empty state, CTA disabled)
-      pdf/PdfToolsPage.tsx         (empty state, CTA disabled)
-      templates/TemplatesPage.tsx  (empty state, CTA disabled)
-      settings/
-        SettingsPage.tsx           (Appearance card plus empty-state panel for future settings)
-        ThemeSelect.tsx            (Light, Dark, System select bound to themeStore)
-    lib/
-      utils.ts               (cn helper)
-      icons.ts               (single icon import point)
-      navItems.ts            (ordered NAV_ITEMS list)
+      home/, generator/, editor/, profiles/, paper/, pdf/, templates/, settings/
+    lib/                     (utils.ts, icons.ts, navItems.ts)
     workers/                 (empty, reserved for Web Workers)
     assets/                  (empty)
-    store/, lib/, workers/, assets/ and components/ hold .gitkeep files where empty.
-  dist/                      (build output, gitignored, present in the ZIP)
+  tests/
+    setup.ts                 (matchMedia stub, Testing Library cleanup)
+    smoke/routes.test.tsx    (one test per route, 9 cases)
+    e2e/navigation.spec.ts   (home to editor, Chromium)
+  dist/                      (build output, gitignored)
 ```
 
 Path alias: '@/' maps to src/ in both tsconfig.json paths and vite.config.ts.
 
-Routes: / (HomePage), /generator, /editor, /profiles, /paper-designer, /pdf-tools, /templates, /settings, and * (404). All are children of the App shell. Each section page has exactly one h1 and no PlaceholderPage is used.
+Routes: / (HomePage), /generator, /editor, /profiles, /paper-designer, /pdf-tools, /templates, /settings, and * (404). All are children of the App shell. Each section page has exactly one h1.
 
 Layout: CSS grid, rows auto and minmax(0,1fr), so the header is fixed and the content row scrolls. Desktop (768px and up): 15rem sidebar plus main when sidebarOpen is true, main only when false. Below 768px: single column, navigation in the drawer.
 
-Theme: mode is light, dark or system. The inline script in index.html sets the "dark" class before first paint. themeStore applies the class on load and on every change, and follows OS changes in system mode. Stored under localStorage key calligraphewrite-theme (values light, dark, system; missing or invalid means system).
+Theme: mode is light, dark or system. The inline script in index.html sets the "dark" class before first paint. Stored under localStorage key calligraphewrite-theme.
 
 ## Last successfully completed prompt
 
 - Prompt 6: Placeholder pages and empty states (verified, commit cc1056a)
+- Housekeeping after Prompt 6 (developer-verified, commit e0492ab). Not a numbered prompt.
 
 ## Prompt status
 
-| Prompt | Title                                        | Status    | Reason                                                                                                                                                                                                                                                                                               |
-| ------ | -------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1      | Project Setup and UI Foundation              | Completed | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed. Developer reports no console errors.                                                                                                                                                                         |
-| 2      | Install styling and UI kit                   | Completed | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed (CSS 19.08 kB, JS 184.75 kB). Dev server visual check passed. Committed as 8bc208f and pushed.                                                                                                   |
-| 3      | Routing and global state scaffolding         | Completed | react-router and zustand installed with 0 vulnerabilities and 0 peer warnings. Typecheck, lint and build (CSS 19.84 kB, JS 286.47 kB) passed. All 8 routes, the 404 page, back/forward, sidebar toggle and toast queue checked in the browser with a clean console. Committed as fcfdf57 and pushed. |
-| 4      | Application layout and responsive navigation | Completed | shadcn Sheet added. AppShell (CSS grid), Header, SideNav and MobileDrawer created. Typecheck, lint and build (CSS 22.67 kB, JS 327.56 kB) passed. Responsive, focus trap, Escape, route-change close, resize close and no-horizontal-overflow checks passed. Committed as 2c236f5 and pushed.        |
-| 5      | Theme management                             | Completed | Inline pre-paint script, themeStore, ThemeSelect, SettingsPage, router update and color-scheme CSS. Typecheck, lint, build (CSS 23.50 kB, JS 390.14 kB) passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7 and pushed.                                     |
-| 6      | Placeholder pages and empty states           | Completed | Shared EmptyState, eight feature pages with one h1 each, Home entry links, Settings empty-state panel, router updated, and PlaceholderPage deleted. Typecheck, lint, build (CSS 23.68 kB, JS 394.55 kB) and browser checks passed. Committed as cc1056a and pushed.                                  |
-
-## Housekeeping after Prompt 6 (not a numbered prompt)
-
-- Fixed: `npm run format:check` failed on PROJECT_STATE.md (Prettier table and blank-line formatting). This file has been reformatted and the version records corrected.
-- Status: Completed. Developer pasted passing output for `npm run format:check`, `npm run typecheck`, `npm run lint` and `npm run build`. Committed as e0492ab ("Housekeeping: fix PROJECT_STATE formatting and versions") and pushed to master.
+| Prompt | Title                                                          | Status       | Reason                                                                                                                                                                                                                       |
+| ------ | -------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1      | Project Setup and UI Foundation                                | Completed    | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed.                                                                                                                                      |
+| 2      | Install styling and UI kit                                     | Completed    | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed. Committed as 8bc208f.                                                                                                   |
+| 3      | Routing and global state scaffolding                           | Completed    | react-router and zustand installed. Typecheck, lint, build passed. Browser checks passed. Committed as fcfdf57.                                                                                                              |
+| 4      | Application layout and responsive navigation                   | Completed    | Typecheck, lint, build passed. Responsive, focus trap, Escape, route-change close checks passed. Committed as 2c236f5.                                                                                                       |
+| 5      | Theme management                                               | Completed    | Typecheck, lint, build passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7.                                                                                                         |
+| 6      | Placeholder pages and empty states                             | Completed    | Typecheck, lint, build passed. Browser checks passed. Committed as cc1056a.                                                                                                                                                  |
+| 7      | Verification checkpoint 1: testing setup and foundation review | Not Verified | Code generated. Awaiting developer output for npm run build, npm run lint, npm test and npm run test:e2e. Sandbox runs passed for typecheck, lint, format, build and 9 unit tests, but these do not count toward acceptance. |
 
 ## Features implemented
 
-- Prompt 1: Default scaffold page, strict TypeScript, ESLint with engine-isolation rule, Prettier with format and format:check scripts.
-- Prompt 2: Tailwind utility classes and CSS design tokens (background, foreground, muted, accent, border, plus card, popover, primary, secondary, destructive, input, ring and radius). Dark-mode token set defined under the .dark class. shadcn/ui components generated as owned files.
-- Prompt 3: Client-side routing for eight sections plus a 404 page, inside the app shell. Zustand UI store with sidebar state, active route and toast queue, exposed through typed hooks. Toasts do not auto-dismiss.
-- Prompt 4: Grid-based app shell with a header, side navigation (eight sections in order, visible from 768px), a left-side Sheet drawer below 768px with focus trapping and Escape to close, route-change close, resize close, visible focus rings, and reduced-motion support. The toast viewport lives in the shell. The header theme button is a placeholder.
-- Prompt 5: Light, dark and system theme modes. Choice saved to localStorage under calligraphewrite-theme. Theme applied before first paint by an inline script. System mode follows OS changes. Settings page with an Appearance card and a Theme select. Dark-mode CSS variables and color-scheme set per theme.
-- Prompt 6: Home page with an introduction and two working links (Generator, Handwriting Profiles). Seven section pages each show an h1, a one-line purpose and a shared EmptyState card. Their call-to-action buttons are disabled and labelled as arriving in later phases. Settings keeps the working Appearance card and adds an empty-state panel.
+- Prompt 1: Default scaffold, strict TypeScript, ESLint with engine-isolation rule, Prettier.
+- Prompt 2: Tailwind utility classes and CSS design tokens. Dark-mode token set. shadcn/ui components generated as owned files.
+- Prompt 3: Client-side routing for eight sections plus a 404 page. Zustand UI store with sidebar state, active route and toast queue.
+- Prompt 4: Grid-based app shell with header, side navigation (visible from 768px), left-side Sheet drawer below 768px with focus trap and Escape. Header theme button is a placeholder.
+- Prompt 5: Light, dark and system theme modes, persisted to localStorage. Settings page with Appearance card.
+- Prompt 6: Home page with two working links. Seven section pages each show an h1, a purpose line and a disabled CTA with a note. Settings keeps the working Appearance card.
+- Prompt 7 (pending verification): Vitest with jsdom and Testing Library, nine smoke tests (one per route), Playwright e2e test for home to editor in Chromium, `test` and `test:e2e` scripts. `appRoutes` exported from router.tsx for memory-router tests.
 
 ## Files created
 
 - Prompt 1 (commit 35bbe5b): package.json, tsconfig.json, vite.config.ts, eslint.config.js, .prettierrc, .prettierignore, .gitignore, index.html, README.md, src/main.tsx, src/index.css, src/vite-env.d.ts, src/app/App.tsx, src/engine/index.ts, src/types/index.ts, and .gitkeep files.
-- Prompt 2 (commit 8bc208f): tailwind.config.ts, postcss.config.js, components.json, src/lib/utils.ts, src/lib/icons.ts, src/components/ui/button.tsx, card.tsx, input.tsx, textarea.tsx, select.tsx, slider.tsx, dialog.tsx, dropdown-menu.tsx, tooltip.tsx.
+- Prompt 2 (commit 8bc208f): tailwind.config.ts, postcss.config.js, components.json, src/lib/utils.ts, src/lib/icons.ts, and 9 shadcn components in src/components/ui.
 - Prompt 3 (commit fcfdf57): src/types/ui.ts, src/store/uiStore.ts, src/store/index.ts, src/app/router.tsx, src/app/NotFoundPage.tsx, src/components/PlaceholderPage.tsx.
-- Prompt 4 (commit 2c236f5): src/components/ui/sheet.tsx (CLI-generated), src/lib/navItems.ts, src/components/layout/AppShell.tsx, Header.tsx, SideNav.tsx, MobileDrawer.tsx.
+- Prompt 4 (commit 2c236f5): src/components/ui/sheet.tsx, src/lib/navItems.ts, src/components/layout/AppShell.tsx, Header.tsx, SideNav.tsx, MobileDrawer.tsx.
 - Prompt 5 (commit 962ecb7): src/store/themeStore.ts, src/features/settings/ThemeSelect.tsx, src/features/settings/SettingsPage.tsx.
-- Prompt 6 (commit cc1056a): src/components/EmptyState.tsx, src/features/home/HomePage.tsx, src/features/generator/GeneratorPage.tsx, src/features/editor/EditorPage.tsx, src/features/profiles/ProfilesPage.tsx, src/features/paper/PaperDesignerPage.tsx, src/features/pdf/PdfToolsPage.tsx, src/features/templates/TemplatesPage.tsx.
+- Prompt 6 (commit cc1056a): src/components/EmptyState.tsx, and seven feature pages under src/features.
+- Prompt 7 (pending commit): tests/setup.ts, tests/smoke/routes.test.tsx, tests/e2e/navigation.spec.ts, playwright.config.ts.
 
 ## Files modified
 
 - Prompt 2: src/index.css, src/app/App.tsx, tsconfig.json, vite.config.ts, eslint.config.js, package.json, package-lock.json.
-- Prompt 3: src/main.tsx (renders RouterProvider), src/app/App.tsx (app shell), src/types/index.ts (re-exports ui types), src/lib/icons.ts, package.json and package-lock.json.
-- Prompt 4: src/types/ui.ts, src/store/uiStore.ts, src/store/index.ts, src/index.css (reduced-motion rule), src/app/App.tsx (now renders AppShell), src/lib/icons.ts (added Moon). Removed from the header: the "Route:" debug text and the "Send test toast" button. Nav labels renamed to "Handwriting Profiles", "Paper Designer" and "PDF Tools".
-- Prompt 5: index.html (inline pre-paint theme script, added to head), src/index.css (color-scheme declarations on :root and .dark), src/app/router.tsx (settings route now renders SettingsPage).
-- Prompt 6: src/app/router.tsx (every route now renders its feature page, not PlaceholderPage), src/features/settings/SettingsPage.tsx (adds h1, purpose line and empty-state panel).
-- Housekeeping after Prompt 6: PROJECT_STATE.md (reformatted, versions corrected, commit e0492ab).
+- Prompt 3: src/main.tsx, src/app/App.tsx, src/types/index.ts, src/lib/icons.ts, package.json, package-lock.json.
+- Prompt 4: src/types/ui.ts, src/store/uiStore.ts, src/store/index.ts, src/index.css, src/app/App.tsx, src/lib/icons.ts.
+- Prompt 5: index.html, src/index.css, src/app/router.tsx.
+- Prompt 6: src/app/router.tsx, src/features/settings/SettingsPage.tsx.
+- Housekeeping (commit e0492ab): PROJECT_STATE.md.
+- Prompt 7 (pending commit): src/app/router.tsx (exports appRoutes), vite.config.ts (Vitest block), tsconfig.json (adds playwright.config.ts and tests), eslint.config.js (ignores and test-file rule), .gitignore, .prettierignore, package.json (scripts and devDependencies), package-lock.json (regenerated).
 
 ## Files deleted
 
-- Prompt 6: src/components/PlaceholderPage.tsx (no longer used).
+- Prompt 6: src/components/PlaceholderPage.tsx.
 
 ## Latest results (as supplied by developer)
 
-- Prompt 1 typecheck: PASS. Lint: PASS. Build: PASS. Dev server: PASS.
-- Prompt 2 shadcn CLI: PASS (9 files created). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 19.08 kB, JS 184.75 kB). Dev server visual check: PASS.
-- Prompt 3 install: PASS (react-router, zustand, 0 vulnerabilities, 0 peer warnings). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 19.84 kB, JS 286.47 kB). Browser checks: PASS.
-- Prompt 4 shadcn CLI: PASS (sheet.tsx created). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 22.67 kB, JS 327.56 kB). Browser checks: PASS.
-- Prompt 5 typecheck: PASS. Lint: PASS. Build: PASS (CSS 23.50 kB, JS 390.14 kB). Browser checks: PASS.
-- Prompt 6 typecheck: PASS. Lint: PASS. Build: PASS (CSS 23.68 kB, JS 394.55 kB). Browser checks: PASS (one h1 per page, all 9 paths return 200, home links navigate, disabled CTAs with notes, light and dark legibility, console free of errors and warnings).
-- Housekeeping (developer-confirmed, commit e0492ab): format:check PASS, typecheck PASS (0 errors), lint PASS (0 warnings or errors), build PASS (CSS 23.68 kB, JS 394.55 kB).
+- Housekeeping (commit e0492ab, developer-verified): format:check PASS, typecheck PASS (0 errors), lint PASS (0 warnings or errors), build PASS (CSS 23.68 kB, JS 394.55 kB).
+- Prompt 1 to 6: as recorded in the Prompt status table above.
+- Prompt 7: no developer output yet. Sandbox only (not counted): typecheck PASS, lint PASS, format:check PASS, build PASS (CSS 23.68 kB, JS 394.55 kB), unit tests PASS (9 of 9). E2E NOT RUN in sandbox.
+
+## Phase 1 foundation review
+
+| #   | Item                                    | Status                                                              |
+| --- | --------------------------------------- | ------------------------------------------------------------------- |
+| 1   | Scaffold, strict TypeScript, Vite build | Pass (Prompt 1). Re-check pending developer build output.           |
+| 2   | ESLint engine-isolation, Prettier       | Pass (Prompt 1). Re-check pending developer lint and format output. |
+| 3   | Tailwind 3.4, PostCSS, shadcn/ui        | Pass (Prompt 2). Re-check pending developer build output.           |
+| 4   | Routing for 8 sections plus 404         | Pass (Prompt 3). Re-check pending developer npm test output.        |
+| 5   | Zustand UI and theme stores             | Pass (Prompts 3 and 5). Re-check pending developer npm test output. |
+| 6   | Responsive app shell and navigation     | Pass (Prompt 4). Re-check pending developer test:e2e output.        |
+| 7   | Light, dark and system theme            | Pass (Prompt 5, manual browser checks). No automated test.          |
+| 8   | Placeholder pages, one h1 each          | Pass (Prompt 6). Re-check pending developer npm test output.        |
+| 9   | Unit and smoke test tooling             | Not Verified (Prompt 7).                                            |
+| 10  | E2E test tooling (Playwright, Chromium) | Not Verified (Prompt 7).                                            |
 
 ## Known bugs and unresolved issues
 
-- No automated tests exist. No test framework and no test script. If the guide's testing checklist needs unit tests, add Vitest in a planned prompt before it is required.
-- Call-to-action buttons on the placeholder pages are disabled until their features are built. Each is intentional.
-- The header theme button (moon icon) is still a placeholder. The real control is on the Settings page. Wire the header button to the theme store, or remove it, in a later prompt.
-- Generated shadcn files (dialog.tsx, select.tsx, sheet.tsx) import icons from 'lucide-react' directly. This breaks the icons-only-through-lib/icons rule, but only in generated files. App code follows the rule.
-- tailwind-merge 3.7.0 is designed for Tailwind v4 class names, while the project uses Tailwind 3.4. It may mis-merge a few classes. Not confirmed as a bug; check visually when styling work begins.
-- Deep links on a static host: refreshing a nested route such as /generator works under the Vite dev server but needs an SPA fallback (a rewrite to index.html) on the production host. Not configured yet. Address at deployment.
-- The Vite base is './' (relative). Deeper routes may need base '/' when deploying to a domain root. Decide at deployment time.
+- Prompt 7 e2e test not yet run anywhere. Chromium browser download was blocked in the sandbox.
+- No automated tests for theme switching or layout.
+- Tests in tests/ are included in tsconfig, so a type error in a test fails npm run build.
+- Header theme button is a placeholder (from Prompt 4). Wire it to the theme store or remove it in a later prompt.
+- Generated shadcn files (dialog.tsx, select.tsx, sheet.tsx) import icons from 'lucide-react' directly. Only in generated files.
+- tailwind-merge 3.7.0 targets Tailwind v4 class names; project uses Tailwind 3.4. Possible mis-merging of a few classes. Check visually when styling work begins.
+- Deep links on a static host need an SPA fallback on the production host. Not configured yet.
+- Vite base is './'. Decide base '/' or not when deploying to a domain root.
 - Sidebar state and toasts are not persisted across reloads. Only the theme is persisted.
-- If localStorage is blocked, the theme still works for the session but is not saved.
-- The developer's machine is Windows. Path handling is untested on macOS or Linux, but nothing in the code is OS-specific.
-- The node-domexception deprecation warning comes from a transitive dependency of the shadcn CLI, not from app code. It can be ignored.
-- Prompts 2 to 6 were verified from written descriptions of the browser output rather than screenshots. If a later prompt depends on exact layout or colour, ask for a screenshot.
+- Developer machine is Windows. Not tested on macOS or Linux.
+- node-domexception deprecation warning comes from a transitive dependency of the shadcn CLI. Can be ignored.
+- Prompts 2 to 6 were verified from written descriptions of browser output, not screenshots.
+- Tailwind scans all of src/. A plain English word such as "table" in a source comment generates a utility class. Keep comments free of class-like words where it matters for CSS size.
 
 ## Technical decisions and context
 
-- Tailwind CSS v3.4 is used, not v4, because the prompt requires tailwind.config.ts and a PostCSS config.
-- The shadcn CLI is pinned to the 2.x line (npx shadcn@2). Do not run npx shadcn@latest in this project, since newer versions generate Tailwind v4 style files. Components are owned source files in src/components/ui.
-- components.json was written by hand, so the CLI's init step is skipped.
-- The react-refresh rule is turned off only for src/components/ui.
-- Icons are imported from src/lib/icons.ts only in app code. Add new icons to that file.
-- Tailwind and shadcn tokens use HSL channel values consumed as hsl(var(--token)).
+- Tailwind CSS v3.4, not v4, because the prompt requires tailwind.config.ts and a PostCSS config.
+- The shadcn CLI is pinned to the 2.x line (npx shadcn@2). Do not run npx shadcn@latest.
+- components.json was written by hand. Components are owned source files in src/components/ui.
+- Icons are imported from src/lib/icons.ts only in app code.
 - The engine folder remains protected from React imports.
-- tailwind.config.ts is not in tsconfig include, so type checking does not cover it. ESLint still lints it.
-- react-router v7 is imported from the 'react-router' package, not 'react-router-dom'. Use createBrowserRouter and RouterProvider from 'react-router'.
-- Zustand selectors return a single value or a stable action function each, never a new object. This avoids re-render loops in Zustand v5.
-- Theme persistence uses a plain string in localStorage, not Zustand's persist middleware, so the pre-paint inline script in index.html can read it without loading JavaScript. The key and values must match between index.html and src/store/themeStore.ts.
-- The theme store applies the dark class at module load. Module load happens when the router imports the Settings page, which is before first render.
-- Breakpoint: 768px (Tailwind md) separates desktop sidebar from mobile drawer. AppShell uses the same breakpoint in its matchMedia query.
-- Drawer open state is mobileNavOpen in uiStore. sidebarOpen only controls the desktop sidebar.
-- Each feature page is a self-contained component under src/features. Business logic arrives in later phases, not here.
+- react-router v7 is imported from 'react-router', not 'react-router-dom'.
+- Zustand selectors return a single value or a stable action each, never a new object.
+- Theme persistence uses a plain localStorage string, so the pre-paint script in index.html can read it. Key and values must match between index.html and src/store/themeStore.ts.
+- Test setup: Vitest is configured inside vite.config.ts with the jsdom environment. Unit and smoke tests live in tests/smoke. Playwright tests live in tests/e2e and are excluded from Vitest. Playwright runs against the production build via npm run build and vite preview on port 4173.
+- jsdom has no matchMedia. tests/setup.ts provides a stub so the theme store and app shell load under test.
+- The router's route list is exported as appRoutes. Tests mount it with createMemoryRouter. The browser router is built from the same list, so tests and the app use the same routes.
+- Prompts 2 to 6 were verified from written descriptions, not screenshots. Ask for a screenshot if a later prompt depends on exact layout or colour.
 
 ## Exact next prompt number
 
-- 7 (not started; prompt text not yet supplied in this chat)
+- 7 is the current prompt and is Not Verified. Do not start Prompt 8 until the developer pastes passing output for npm run build, npm run lint, npm test and npm run test:e2e.
+- Next prompt after Prompt 7 is verified: 8.
 
 ## Instructions for continuing in another Claude account
 

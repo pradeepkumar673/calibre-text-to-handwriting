@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules'] },
+  { ignores: ['dist', 'node_modules', 'playwright-report', 'test-results'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx,js}'],
@@ -39,6 +39,13 @@ export default tseslint.config(
   {
     // shadcn/ui generated files export component variants next to components. They are third-party style code, so this rule is off there.
     files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    // Test files export nothing as components, so the refresh rule does not apply to them.
+    files: ['tests/**/*.{ts,tsx}'],
     rules: {
       'react-refresh/only-export-components': 'off',
     },

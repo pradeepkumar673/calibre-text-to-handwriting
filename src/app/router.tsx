@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, type RouteObject } from 'react-router';
 import EditorPage from '@/features/editor/EditorPage';
 import GeneratorPage from '@/features/generator/GeneratorPage';
 import HomePage from '@/features/home/HomePage';
@@ -10,8 +10,8 @@ import TemplatesPage from '@/features/templates/TemplatesPage';
 import App from './App';
 import NotFoundPage from './NotFoundPage';
 
-// Browser router. The App shell wraps every section, and unknown paths fall through to the 404 page.
-export const router = createBrowserRouter([
+// Route list. Exported so tests can mount the same routes with a memory router.
+export const appRoutes: RouteObject[] = [
   {
     path: '/',
     element: <App />,
@@ -27,4 +27,7 @@ export const router = createBrowserRouter([
       { path: '*', element: <NotFoundPage /> },
     ],
   },
-]);
+];
+
+// Browser router used by the app. The App shell wraps every section, and unknown paths fall through to the 404 page.
+export const router = createBrowserRouter(appRoutes);
