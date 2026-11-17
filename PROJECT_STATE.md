@@ -15,6 +15,7 @@
 - Installed and verified (Prompt 3): react-router 7.13.0 (imported from 'react-router'), zustand 5.0.3.
 - Installed and verified (Prompt 4): shadcn Sheet component (src/components/ui/sheet.tsx, via the CLI). It reuses the Radix Dialog package already installed.
 - Installed and verified (Prompt 5): no new packages. Uses existing Zustand and shadcn Select.
+- Installed and verified (Prompt 6): no new packages.
 - Not yet installed: Konva.js, PDF.js, pdf-lib, KaTeX, OpenCV.js. Deferred to later phases.
 
 ## Current architecture and folder structure
@@ -47,11 +48,18 @@ AppShell.tsx (CSS grid shell, route sync, drawer close on route change, toast vi
 Header.tsx (app name, drawer button for mobile, sidebar toggle for desktop, theme placeholder button)
 SideNav.tsx (NavLink list, used in sidebar and drawer)
 MobileDrawer.tsx (Sheet from the left below 768px)
-PlaceholderPage.tsx (shared placeholder for unbuilt sections)
+EmptyState.tsx (shared empty-state panel built on shadcn Card)
 .gitkeep
 features/
+home/HomePage.tsx (intro and Open Generator / Handwriting Profiles links)
+generator/GeneratorPage.tsx (empty state, CTA disabled)
+editor/EditorPage.tsx (empty state, CTA disabled)
+profiles/ProfilesPage.tsx (empty state, CTA disabled)
+paper/PaperDesignerPage.tsx (empty state, CTA disabled)
+pdf/PdfToolsPage.tsx (empty state, CTA disabled)
+templates/TemplatesPage.tsx (empty state, CTA disabled)
 settings/
-SettingsPage.tsx (Settings section, holds the Appearance card)
+SettingsPage.tsx (Appearance card plus empty-state panel for future settings)
 ThemeSelect.tsx (Light, Dark, System select bound to themeStore)
 lib/
 utils.ts (cn helper)
@@ -63,7 +71,7 @@ assets/.gitkeep
 
 Path alias: '@/' maps to src/ in both tsconfig.json paths and vite.config.ts.
 
-Routes: / (Home), /generator, /editor, /profiles, /paper-designer, /pdf-tools, /templates, /settings (SettingsPage), and * (404). All are children of the App shell. All sections except Settings render a PlaceholderPage.
+Routes: / (HomePage), /generator, /editor, /profiles, /paper-designer, /pdf-tools, /templates, /settings, and * (404). All are children of the App shell. Each section page has exactly one h1 and no PlaceholderPage is used.
 
 Layout: CSS grid, rows auto and minmax(0,1fr), so the header is fixed and the content row scrolls. Desktop (768px and up): 15rem sidebar plus main when sidebarOpen is true, main only when false. Below 768px: single column, navigation in the drawer.
 
@@ -71,7 +79,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 
 ## Last successfully completed prompt
 
-- Prompt 5: Theme management (verified, commit 962ecb7)
+- Prompt 6: Placeholder pages and empty states (verified)
 
 ## Prompt status
 
@@ -82,6 +90,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 | 3      | Routing and global state scaffolding         | Completed | react-router 7.13.0 and zustand 5.0.3 installed with 0 vulnerabilities and 0 peer warnings. Typecheck, lint and build (CSS 19.84 kB, JS 286.47 kB) passed. All 8 routes, the 404 page, back/forward, sidebar toggle and toast queue checked in the browser with a clean console. Committed as fcfdf57 and pushed. |
 | 4      | Application layout and responsive navigation | Completed | shadcn Sheet added. AppShell (CSS grid), Header, SideNav and MobileDrawer created. Typecheck, lint and build (CSS 22.67 kB, JS 327.56 kB) passed. Responsive, focus trap, Escape, route-change close, resize close and no-horizontal-overflow checks passed. Committed as 2c236f5 and pushed.                     |
 | 5      | Theme management                             | Completed | Inline pre-paint script, themeStore, ThemeSelect, SettingsPage, router update and color-scheme CSS. Typecheck, lint, build (CSS 23.50 kB, JS 390.14 kB) passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7 and pushed.                                                  |
+| 6      | Placeholder pages and empty states           | Completed | Shared EmptyState, eight feature pages with one h1 each, Home entry links, Settings empty-state panel, router updated, and PlaceholderPage deleted. Typecheck, lint, build (CSS 23.68 kB, JS 394.55 kB) and browser checks passed.                                                                                |
 
 ## Features implemented
 
@@ -90,6 +99,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 3: Client-side routing for eight sections plus a 404 page, inside the app shell. Zustand UI store with sidebar state, active route and toast queue, exposed through typed hooks. Toasts do not auto-dismiss.
 - Prompt 4: Grid-based app shell with a header, side navigation (eight sections in order, visible from 768px), a left-side Sheet drawer below 768px with focus trapping and Escape to close, route-change close, resize close, visible focus rings, and reduced-motion support. The toast viewport lives in the shell. The header theme button is a placeholder.
 - Prompt 5: Light, dark and system theme modes. Choice saved to localStorage under calligraphewrite-theme. Theme applied before first paint by an inline script. System mode follows OS changes. Settings page with an Appearance card and a Theme select. Dark-mode CSS variables and color-scheme set per theme.
+- Prompt 6: Home page with an introduction and two working links (Generator, Handwriting Profiles). Seven section pages each show an h1, a one-line purpose and a shared EmptyState card. Their call-to-action buttons are disabled and labelled as arriving in later phases. Settings keeps the working Appearance card and adds an empty-state panel.
 
 ## Files created
 
@@ -98,6 +108,7 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 3 (commit fcfdf57): src/types/ui.ts, src/store/uiStore.ts, src/store/index.ts, src/app/router.tsx, src/app/NotFoundPage.tsx, src/components/PlaceholderPage.tsx.
 - Prompt 4 (commit 2c236f5): src/components/ui/sheet.tsx (CLI-generated), src/lib/navItems.ts, src/components/layout/AppShell.tsx, Header.tsx, SideNav.tsx, MobileDrawer.tsx.
 - Prompt 5 (commit 962ecb7): src/store/themeStore.ts, src/features/settings/ThemeSelect.tsx, src/features/settings/SettingsPage.tsx.
+- Prompt 6: src/components/EmptyState.tsx, src/features/home/HomePage.tsx, src/features/generator/GeneratorPage.tsx, src/features/editor/EditorPage.tsx, src/features/profiles/ProfilesPage.tsx, src/features/paper/PaperDesignerPage.tsx, src/features/pdf/PdfToolsPage.tsx, src/features/templates/TemplatesPage.tsx.
 
 ## Files modified
 
@@ -105,6 +116,11 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 3: src/main.tsx (renders RouterProvider), src/app/App.tsx (app shell), src/types/index.ts (re-exports ui types), src/lib/icons.ts, package.json and package-lock.json.
 - Prompt 4: src/types/ui.ts, src/store/uiStore.ts, src/store/index.ts, src/index.css (reduced-motion rule), src/app/App.tsx (now renders AppShell), src/lib/icons.ts (added Moon). Removed from the header: the "Route:" debug text and the "Send test toast" button. Nav labels renamed to "Handwriting Profiles", "Paper Designer" and "PDF Tools".
 - Prompt 5: index.html (inline pre-paint theme script, added to head), src/index.css (color-scheme declarations on :root and .dark), src/app/router.tsx (settings route now renders SettingsPage).
+- Prompt 6: src/app/router.tsx (every route now renders its feature page, not PlaceholderPage), src/features/settings/SettingsPage.tsx (adds h1, purpose line and empty-state panel).
+
+## Files deleted
+
+- Prompt 6: src/components/PlaceholderPage.tsx (no longer used).
 
 ## Latest results (as supplied by developer)
 
@@ -112,11 +128,16 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - Prompt 2 shadcn CLI: PASS (9 files created). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 19.08 kB, JS 184.75 kB). Dev server visual check: PASS.
 - Prompt 3 install: PASS (react-router 7.13.0, zustand 5.0.3, 0 vulnerabilities, 0 peer warnings). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 19.84 kB, JS 286.47 kB). Browser checks: PASS.
 - Prompt 4 shadcn CLI: PASS (sheet.tsx created). Typecheck: PASS. Lint: PASS. Build: PASS (CSS 22.67 kB, JS 327.56 kB). Browser checks: PASS.
-- Prompt 5 typecheck: PASS. Lint: PASS. Build: PASS (CSS 23.50 kB, JS 390.14 kB). Browser checks: PASS (System default, Dark and Light persist across reload with no white flash, localStorage key correct, System follows prefers-color-scheme, contrast readable in both themes, console clean).
+- Prompt 5 typecheck: PASS. Lint: PASS. Build: PASS (CSS 23.50 kB, JS 390.14 kB). Browser checks: PASS.
+- Prompt 6 typecheck: PASS (tsc --noEmit, exit code 0).
+- Prompt 6 lint: PASS (eslint ., exit code 0).
+- Prompt 6 build: PASS (tsc --noEmit && vite build, CSS 23.68 kB, JS 394.55 kB, exit code 0).
+- Prompt 6 browser checks: PASS (exactly one h1 per page, home links navigate correctly, CTA buttons disabled with note, dark and light theme legibility clean, 0 console errors or warnings).
 
 ## Known bugs and unresolved issues
 
 - None known in verified code.
+- Call-to-action buttons on the placeholder pages are disabled until their features are built. Each is intentional.
 - The header theme button (moon icon) is still a placeholder. The real control is on the Settings page. Wire the header button to the theme store, or remove it, in a later prompt.
 - Generated shadcn files (dialog.tsx, select.tsx, sheet.tsx) import icons from 'lucide-react' directly. This breaks the icons-only-through-lib/icons rule, but only in generated files. App code follows the rule.
 - Deep links on a static host: refreshing a nested route such as /generator works under the Vite dev server but needs an SPA fallback (a rewrite to index.html) on the production host. Not configured yet. Address at deployment.
@@ -142,12 +163,12 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 - The theme store applies the dark class at module load. Module load happens when the router imports the Settings page, which is before first render.
 - Breakpoint: 768px (Tailwind md) separates desktop sidebar from mobile drawer. AppShell uses the same breakpoint in its matchMedia query.
 - Drawer open state is mobileNavOpen in uiStore. sidebarOpen only controls the desktop sidebar.
-- Each route renders a PlaceholderPage except Settings. Each later phase replaces its placeholder with a real feature component under src/features.
-- Prompts 2 to 5 were verified from written descriptions of the browser output rather than screenshots. If a later prompt depends on exact layout or colour, ask for a screenshot.
+- Each feature page is a self-contained component under src/features. Business logic arrives in later phases, not here.
+- Prompts 2 to 6 were verified from written descriptions of the browser output rather than screenshots. If a later prompt depends on exact layout or colour, ask for a screenshot.
 
 ## Exact next prompt number
 
-- 6
+- 7
 
 ## Instructions for continuing in another Claude account
 

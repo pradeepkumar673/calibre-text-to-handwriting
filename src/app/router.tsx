@@ -1,6 +1,12 @@
 import { createBrowserRouter } from 'react-router';
-import PlaceholderPage from '@/components/PlaceholderPage';
+import EditorPage from '@/features/editor/EditorPage';
+import GeneratorPage from '@/features/generator/GeneratorPage';
+import HomePage from '@/features/home/HomePage';
+import PaperDesignerPage from '@/features/paper/PaperDesignerPage';
+import PdfToolsPage from '@/features/pdf/PdfToolsPage';
+import ProfilesPage from '@/features/profiles/ProfilesPage';
 import SettingsPage from '@/features/settings/SettingsPage';
+import TemplatesPage from '@/features/templates/TemplatesPage';
 import App from './App';
 import NotFoundPage from './NotFoundPage';
 
@@ -10,72 +16,15 @@ export const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
-      {
-        index: true,
-        element: (
-          <PlaceholderPage
-            title="Home"
-            description="Start a new handwritten page or open a recent project."
-          />
-        ),
-      },
-      {
-        path: 'generator',
-        element: (
-          <PlaceholderPage
-            title="Generator"
-            description="Turn pasted text into handwritten pages."
-          />
-        ),
-      },
-      {
-        path: 'editor',
-        element: (
-          <PlaceholderPage
-            title="Editor"
-            description="Select, erase, add, replace and annotate generated pages."
-          />
-        ),
-      },
-      {
-        path: 'profiles',
-        element: (
-          <PlaceholderPage
-            title="Handwriting profiles"
-            description="Choose a preloaded style or build your own from a scanned sample sheet."
-          />
-        ),
-      },
-      {
-        path: 'paper-designer',
-        element: (
-          <PlaceholderPage
-            title="Paper designer"
-            description="Set paper size, ruling, margins and colours."
-          />
-        ),
-      },
-      {
-        path: 'pdf-tools',
-        element: (
-          <PlaceholderPage
-            title="PDF tools"
-            description="Load and edit existing handwritten PDFs."
-          />
-        ),
-      },
-      {
-        path: 'templates',
-        element: <PlaceholderPage title="Templates" description="Save and reuse page layouts." />,
-      },
-      {
-        path: 'settings',
-        element: <SettingsPage />,
-      },
-      {
-        path: '*',
-        element: <NotFoundPage />,
-      },
+      { index: true, element: <HomePage /> },
+      { path: 'generator', element: <GeneratorPage /> },
+      { path: 'editor', element: <EditorPage /> },
+      { path: 'profiles', element: <ProfilesPage /> },
+      { path: 'paper-designer', element: <PaperDesignerPage /> },
+      { path: 'pdf-tools', element: <PdfToolsPage /> },
+      { path: 'templates', element: <TemplatesPage /> },
+      { path: 'settings', element: <SettingsPage /> },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]);
