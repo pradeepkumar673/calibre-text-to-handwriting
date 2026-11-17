@@ -7,62 +7,68 @@
 
 ## Technology stack
 - Planned: React, Vite, TypeScript, Tailwind CSS, shadcn/ui, Lucide React, Zustand, HTML Canvas API, SVG, Konva.js, PDF.js, pdf-lib, KaTeX, IndexedDB, Web Workers, OpenCV.js.
-- Installed so far: Vite, React 18, TypeScript (strict), ESLint (flat config with typescript-eslint and react-hooks/react-refresh plugins), Prettier.
+- Installed so far: React 18.3.1, Vite 6, TypeScript 5.6 (strict), ESLint 9 (flat config with typescript-eslint, react-hooks and react-refresh plugins), Prettier 3.
 - Not yet installed: Tailwind CSS, shadcn/ui, Lucide React, Zustand, Konva.js, PDF.js, pdf-lib, KaTeX, OpenCV.js. These are deferred to later phases.
 
 ## Current architecture and folder structure
-```
+
 calligraphewrite/
-  index.html
-  package.json, tsconfig.json, vite.config.ts, eslint.config.js, .prettierrc, .prettierignore, .gitignore, README.md
-  src/
-    main.tsx
-    index.css
-    vite-env.d.ts
-    app/App.tsx
-    engine/index.ts        (must not import React; enforced by ESLint rule)
-    types/index.ts
-    features/.gitkeep
-    store/.gitkeep
-    components/.gitkeep
-    lib/.gitkeep
-    workers/.gitkeep
-    assets/.gitkeep
-```
+index.html
+package.json, tsconfig.json, vite.config.ts, eslint.config.js, .prettierrc, .prettierignore, .gitignore, README.md
+src/
+main.tsx
+index.css
+vite-env.d.ts
+app/App.tsx
+engine/index.ts (must not import React; enforced by ESLint rule)
+types/index.ts
+features/.gitkeep
+store/.gitkeep
+components/.gitkeep
+lib/.gitkeep
+workers/.gitkeep
+assets/.gitkeep
+
 
 ## Last successfully completed prompt
-- Prompt 1: Project Setup and UI Foundation
+- Prompt 1: Project Setup and UI Foundation (verified, commit 35bbe5b)
 
 ## Prompt status
 | Prompt | Title | Status | Reason |
 | --- | --- | --- | --- |
-| 1 | Project Setup and UI Foundation | Completed | Scaffold generated, dependencies installed, typecheck, lint, build, and dev server verified clean. |
+| 1 | Project Setup and UI Foundation | Completed | Scaffold generated and committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed. Developer reports no console errors. |
 
 ## Features implemented
-- Default scaffold page ("CalligrapheWrite" heading and status text) with strict TypeScript, ESLint rules (engine isolation enforced), and Vite dev server.
+- Default scaffold page ("CalligrapheWrite" heading and status text) served by the Vite dev server.
+- Strict TypeScript configuration.
+- ESLint with an engine-isolation rule that forbids importing react and react-dom from src/engine.
+- Prettier configuration with format and format:check scripts.
 
 ## Files created
-- All files listed in the architecture section above, all NEW in Phase 1.
+- Phase 1 (commit 35bbe5b): package.json, tsconfig.json, vite.config.ts, eslint.config.js, .prettierrc, .prettierignore, .gitignore, index.html, README.md, src/main.tsx, src/index.css, src/vite-env.d.ts, src/app/App.tsx, src/engine/index.ts, src/types/index.ts, and .gitkeep files in src/features, src/store, src/components, src/lib, src/workers, src/assets.
 
 ## Files modified
 - None.
 
 ## Latest results (as supplied by developer)
-- Build: PASS (tsc --noEmit && vite build completed with 0 errors)
-- TypeScript (npm run typecheck): PASS (tsc --noEmit exited with code 0)
-- Lint: PASS (eslint . exited with code 0)
-- Dev server / console: PASS (http://localhost:5173 served HTTP 200 OK, JSX transformed cleanly, no console errors)
+- Typecheck (npm run typecheck): PASS (tsc --noEmit, exit code 0, 0 errors)
+- Lint (npm run lint): PASS (eslint ., exit code 0, 0 warnings or errors)
+- Build (npm run build): PASS (tsc --noEmit && vite build, 27 modules, exit code 0)
+- Dev server (http://localhost:5173): PASS (HTTP 200, heading and subtext render, developer reports no console errors)
+- Git: committed as 35bbe5b "Phase 1: project setup and UI shell"
 
 ## Known bugs and unresolved issues
-- None known. Phase 1 has not been run.
+- None known.
+- The dev-server check was an HTTP and module-transform check plus a developer-reported console check. Re-confirm the browser console is empty if any later issue appears.
 
 ## Technical decisions and context
 - Tailwind, shadcn/ui and other UI libraries are deferred so the first step stays small and verifiable. The UI foundation will be added in a later prompt.
 - The Vite template was not run through create-vite. The equivalent files were written by hand to give full control over strict TypeScript settings.
-- `tsc --noEmit` covers src and vite.config.ts through the root tsconfig.json, so it actually checks the code.
+- tsc --noEmit covers src and vite.config.ts through the root tsconfig.json.
 - The build script runs the type check before vite build.
 - The engine folder is protected by an ESLint rule that forbids importing react and react-dom.
 - base is './' in vite.config.ts so the static build works from any path.
+- Node 20.19+ or 22.12+ is required.
 
 ## Exact next prompt number
 - 2
