@@ -1,79 +1,98 @@
 # PROJECT_STATE.md
 
 ## Project overview
+
 - Name: CalligrapheWrite
 - Purpose: A local-first web app that converts pasted text into realistic handwritten pages, with paper, ink, pen, spacing and imperfection controls, a preloaded or personal handwriting profile, an editor, PDF and PNG export, and editing of existing handwritten PDFs.
 - Constraints: No mandatory backend, authentication, MongoDB, Firebase, Cloudinary, paid APIs or cloud AI. Must run locally and deploy as a static site.
 
 ## Technology stack
+
 - Planned: React, Vite, TypeScript, Tailwind CSS, shadcn/ui, Lucide React, Zustand, HTML Canvas API, SVG, Konva.js, PDF.js, pdf-lib, KaTeX, IndexedDB, Web Workers, OpenCV.js.
-- Installed so far: React 18.3.1, Vite 6, TypeScript 5.6 (strict), ESLint 9 (flat config with typescript-eslint, react-hooks and react-refresh plugins), Prettier 3.
-- Not yet installed: Tailwind CSS, shadcn/ui, Lucide React, Zustand, Konva.js, PDF.js, pdf-lib, KaTeX, OpenCV.js. These are deferred to later phases.
+- Installed and verified (Prompt 1): React 18.3.1, Vite 6, TypeScript 5.6 (strict), ESLint 9 (flat config with typescript-eslint, react-hooks and react-refresh), Prettier 3.
+- Added and verified (Prompt 2): Tailwind CSS 3.4 (v3 chosen because the prompt requires tailwind.config.ts and a PostCSS config), tailwindcss-animate, PostCSS, Autoprefixer, shadcn/ui components via the shadcn CLI 2.x line, Radix UI primitives (installed by the CLI), class-variance-authority, clsx, tailwind-merge, lucide-react.
+- Not yet installed: Zustand, Konva.js, PDF.js, pdf-lib, KaTeX, OpenCV.js. Deferred to later phases.
 
 ## Current architecture and folder structure
 
 calligraphewrite/
 index.html
-package.json, tsconfig.json, vite.config.ts, eslint.config.js, .prettierrc, .prettierignore, .gitignore, README.md
+package.json, package-lock.json, tsconfig.json, vite.config.ts, eslint.config.js,
+tailwind.config.ts, postcss.config.js, components.json,
+.prettierrc, .prettierignore, .gitignore, README.md
 src/
 main.tsx
-index.css
+index.css (Tailwind directives and shadcn design tokens)
 vite-env.d.ts
-app/App.tsx
+app/App.tsx (temporary design-system check page)
 engine/index.ts (must not import React; enforced by ESLint rule)
 types/index.ts
+lib/utils.ts (cn helper)
+lib/icons.ts (single icon import point)
+components/ui/ (shadcn/ui owned source files: button, card, input, textarea, select, slider, dialog, dropdown-menu, tooltip)
 features/.gitkeep
 store/.gitkeep
 components/.gitkeep
-lib/.gitkeep
 workers/.gitkeep
 assets/.gitkeep
 
+Path alias: '@/' maps to src/ in both tsconfig.json paths and vite.config.ts.
 
 ## Last successfully completed prompt
-- Prompt 1: Project Setup and UI Foundation (verified, commit 35bbe5b)
+
+- Prompt 2: Install styling and UI kit
 
 ## Prompt status
-| Prompt | Title | Status | Reason |
-| --- | --- | --- | --- |
-| 1 | Project Setup and UI Foundation | Completed | Scaffold generated and committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed. Developer reports no console errors. |
+
+| Prompt | Title                           | Status    | Reason                                                                                                                       |
+| ------ | ------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1      | Project Setup and UI Foundation | Completed | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed. Developer reports no console errors. |
+| 2      | Install styling and UI kit      | Completed | Tailwind CSS 3.4, PostCSS, 9 shadcn/ui components generated, typecheck, lint, build (CSS: 19.08 kB) and dev server verified. |
 
 ## Features implemented
-- Default scaffold page ("CalligrapheWrite" heading and status text) served by the Vite dev server.
-- Strict TypeScript configuration.
-- ESLint with an engine-isolation rule that forbids importing react and react-dom from src/engine.
-- Prettier configuration with format and format:check scripts.
+
+- Prompt 1: Default scaffold page, strict TypeScript, ESLint with engine-isolation rule, Prettier with format and format:check scripts.
+- Prompt 2: Tailwind utility classes and CSS design tokens (background, foreground, muted, accent, border, plus card, popover, primary, secondary, destructive, input, ring and radius). Dark-mode token set defined under the .dark class (no toggle yet). shadcn/ui components generated as owned files. Temporary design-system check page in App.tsx.
 
 ## Files created
-- Phase 1 (commit 35bbe5b): package.json, tsconfig.json, vite.config.ts, eslint.config.js, .prettierrc, .prettierignore, .gitignore, index.html, README.md, src/main.tsx, src/index.css, src/vite-env.d.ts, src/app/App.tsx, src/engine/index.ts, src/types/index.ts, and .gitkeep files in src/features, src/store, src/components, src/lib, src/workers, src/assets.
+
+- Prompt 1 (commit 35bbe5b): package.json, tsconfig.json, vite.config.ts, eslint.config.js, .prettierrc, .prettierignore, .gitignore, index.html, README.md, src/main.tsx, src/index.css, src/vite-env.d.ts, src/app/App.tsx, src/engine/index.ts, src/types/index.ts, and .gitkeep files in src/features, src/store, src/components, src/lib, src/workers, src/assets.
+- Prompt 2: tailwind.config.ts, postcss.config.js, components.json, src/lib/utils.ts, src/lib/icons.ts, src/components/ui/button.tsx, card.tsx, input.tsx, textarea.tsx, select.tsx, slider.tsx, dialog.tsx, dropdown-menu.tsx, tooltip.tsx.
 
 ## Files modified
-- None.
+
+- Prompt 2: src/index.css (replaced with Tailwind directives and tokens), src/app/App.tsx (replaced with design check page), tsconfig.json (added paths alias), vite.config.ts (added '@' alias), eslint.config.js (added shadcn override), package.json and package-lock.json (dependencies added by npm installs).
 
 ## Latest results (as supplied by developer)
-- Typecheck (npm run typecheck): PASS (tsc --noEmit, exit code 0, 0 errors)
-- Lint (npm run lint): PASS (eslint ., exit code 0, 0 warnings or errors)
-- Build (npm run build): PASS (tsc --noEmit && vite build, 27 modules, exit code 0)
-- Dev server (http://localhost:5173): PASS (HTTP 200, heading and subtext render, developer reports no console errors)
-- Git: committed as 35bbe5b "Phase 1: project setup and UI shell"
+
+- Prompt 1 typecheck: PASS. Lint: PASS. Build: PASS. Dev server: PASS (HTTP 200, no console errors reported).
+- Prompt 2 shadcn CLI: PASS (9 UI components generated).
+- Prompt 2 typecheck: PASS (tsc --noEmit, exit code 0).
+- Prompt 2 lint: PASS (eslint ., exit code 0).
+- Prompt 2 build: PASS (tsc --noEmit && vite build, CSS: 19.08 kB, JS: 184.75 kB, exit code 0).
+- Prompt 2 dev server: PASS (HTTP 200, card bordered, button dark with light text, no console errors).
 
 ## Known bugs and unresolved issues
-- None known.
-- The dev-server check was an HTTP and module-transform check plus a developer-reported console check. Re-confirm the browser console is empty if any later issue appears.
+
+- None known in verified code.
 
 ## Technical decisions and context
-- Tailwind, shadcn/ui and other UI libraries are deferred so the first step stays small and verifiable. The UI foundation will be added in a later prompt.
-- The Vite template was not run through create-vite. The equivalent files were written by hand to give full control over strict TypeScript settings.
-- tsc --noEmit covers src and vite.config.ts through the root tsconfig.json.
-- The build script runs the type check before vite build.
-- The engine folder is protected by an ESLint rule that forbids importing react and react-dom.
-- base is './' in vite.config.ts so the static build works from any path.
-- Node 20.19+ or 22.12+ is required.
+
+- Tailwind CSS v3.4 is used, not v4, because the prompt requires tailwind.config.ts and a PostCSS config. Tailwind v4 is CSS-first and would need a different setup.
+- The shadcn CLI is pinned to the 2.x line (npx shadcn@2) because it supports Tailwind v3. Components are owned source files in src/components/ui.
+- components.json was written by hand, so the CLI's init step is skipped.
+- The react-refresh rule is turned off only for src/components/ui, because shadcn components export variants alongside components.
+- Icons are imported from src/lib/icons.ts only, so the icon set can be changed in one place.
+- Tailwind and shadcn tokens use HSL channel values (for example "222.2 84% 4.9%") consumed as hsl(var(--token)).
+- The engine folder remains protected from React imports.
+- tailwind.config.ts is not in tsconfig include, so type checking does not cover it. ESLint still lints it.
 
 ## Exact next prompt number
-- 2
+
+- 3
 
 ## Instructions for continuing in another Claude account
+
 1. Open a new chat and upload this PROJECT_STATE.md file, plus the current project files relevant to the next prompt.
 2. Tell Claude: "Continue CalligrapheWrite from the next prompt number in PROJECT_STATE.md. Do not assume any file contents I have not provided."
 3. Only mark a prompt Completed after the developer has pasted passing test and build output for it.

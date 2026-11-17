@@ -36,5 +36,12 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    // shadcn/ui generated files export component variants next to components. They are third-party style code, so this rule is off there.
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
   prettier,
 );

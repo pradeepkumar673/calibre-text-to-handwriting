@@ -18,15 +18,15 @@ Then open http://localhost:5173 in your browser.
 
 ## Scripts
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the local development server |
-| `npm run build` | Type-check, then produce a static build in `dist/` |
-| `npm run preview` | Serve the production build locally |
-| `npm run typecheck` | Run `tsc --noEmit` on its own |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format all files with Prettier |
-| `npm run format:check` | Check formatting without changing files |
+| Command                | Purpose                                            |
+| ---------------------- | -------------------------------------------------- |
+| `npm run dev`          | Start the local development server                 |
+| `npm run build`        | Type-check, then produce a static build in `dist/` |
+| `npm run preview`      | Serve the production build locally                 |
+| `npm run typecheck`    | Run `tsc --noEmit` on its own                      |
+| `npm run lint`         | Run ESLint                                         |
+| `npm run format`       | Format all files with Prettier                     |
+| `npm run format:check` | Check formatting without changing files            |
 
 ## Folder structure
 
