@@ -24,8 +24,8 @@
   - typescript 5.9.3 (strict)
   - eslint 9 (flat config with typescript-eslint, react-hooks and react-refresh), prettier 3
   - @types/node 26.6.6
-  - Test tooling (Prompt 7): vitest 3.2.7, jsdom 26.1, @testing-library/react 16.3.3, @testing-library/dom 10.4.2, @playwright/test 1.65.1
-  - Prompt 9 (not yet verified): idb ^8 (runtime), fake-indexeddb ^6 (dev). Confirm exact resolved versions in package-lock.json.
+  - Test tooling: vitest 3.2.7, jsdom 26.1, @testing-library/react 16.3.3, @testing-library/dom 10.4.2, @playwright/test 1.65.1, fake-indexeddb 6.2.8 (dev)
+  - Persistence: idb 8.0.4 (runtime)
 - Not yet installed: Konva.js, PDF.js, pdf-lib, KaTeX, OpenCV.js. Deferred to later phases.
 
 ## Current architecture and folder structure
@@ -78,11 +78,11 @@ calibre text to handwriting/   (project root)
     workers/                 (empty, reserved for Web Workers)
     assets/                  (empty)
   tests/
-    setup.ts                 (matchMedia stub, Testing Library cleanup)
+    setup.ts                 (matchMedia stub, Testing Library cleanup, Node Blob binding for fake-indexeddb)
     smoke/routes.test.tsx    (one test per route, 9 cases)
-    unit/document-model.test.ts (15 cases: createDocument, word boundaries and seeds, serialisation)
-    unit/db/repositories.test.ts (13 cases: document, template, profile and asset repositories, localStorage check)
-    unit/db/migration.test.ts    (3 cases: v1 to v2 upgrade keeps records, newer schema rejected, failed upgrade leaves data unchanged)
+    unit/document-model.test.ts (15 cases)
+    unit/db/repositories.test.ts (13 cases, includes localStorage check)
+    unit/db/migration.test.ts    (3 cases: v1 to v2 keeps records, newer schema rejected, failed upgrade leaves data unchanged)
     e2e/navigation.spec.ts   (home to editor, Chromium)
   dist/                      (build output, gitignored)
 ```
@@ -97,25 +97,25 @@ Theme: mode is light, dark or system. The inline script in index.html sets the "
 
 Document model: DocumentModel holds schemaVersion (currently 1), id, title, createdAt, updatedAt, paperTemplateId, styleId, settings and pages. Elements are a discriminated union on `kind`. Positions are millimetres from the top-left of the page. Ids are random 96-bit hex strings from crypto.getRandomValues.
 
-Persistence: IndexedDB database `calligraphewrite`, version 1, with four object stores (documents, templates, profiles, assets). Each store uses `id` as its key and has an `updatedAt` index. The database handle opens lazily, shares one connection, closes on a versionchange request from another tab, and retries after a failed open. All repository calls are async, and every failure is a StorageError with a code: unavailable, quota, version, upgrade, aborted, invalid or unknown. Records are validated on both read and write. Assets are stored as Blobs.
+Persistence: IndexedDB database `calligraphewrite`, version 1, with four object stores (documents, templates, profiles, assets). Each store uses `id` as its key and has an `updatedAt` index. The database handle opens lazily, shares one connection, closes on a versionchange request from another tab, and retries after a failed open. All repository calls are async. Every failure is a StorageError with a code: unavailable, quota, version, upgrade, aborted, invalid or unknown. Records are validated on read and write. Assets are stored as Blobs. The persistence layer is not yet imported by any app screen.
 
 ## Last successfully completed prompt
 
-- Prompt 8: Document data model (verified, commit c24f354)
+- Prompt 9: Local persistence layer (verified, commit f58cb87)
 
 ## Prompt status
 
-| Prompt | Title                                                          | Status       | Reason                                                                                                                                                                                                                                                  |
-| ------ | -------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1      | Project Setup and UI Foundation                                | Completed    | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed.                                                                                                                                                                 |
-| 2      | Install styling and UI kit                                     | Completed    | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed. Committed as 8bc208f.                                                                                                                              |
-| 3      | Routing and global state scaffolding                           | Completed    | react-router and zustand installed. Typecheck, lint, build passed. Browser checks passed. Committed as fcfdf57.                                                                                                                                         |
-| 4      | Application layout and responsive navigation                   | Completed    | Typecheck, lint, build passed. Responsive, focus trap, Escape, route-change close checks passed. Committed as 2c236f5.                                                                                                                                  |
-| 5      | Theme management                                               | Completed    | Typecheck, lint, build passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7.                                                                                                                                    |
-| 6      | Placeholder pages and empty states                             | Completed    | Typecheck, lint, build passed. Browser checks passed. Committed as cc1056a.                                                                                                                                                                             |
-| 7      | Verification checkpoint 1: testing setup and foundation review | Completed    | Developer pasted passing output: format:check, typecheck, lint, build, npm test (9 of 9), npm run test:e2e (1 of 1, Chromium). Committed as 640d62b.                                                                                                    |
-| 8      | Document data model                                            | Completed    | Developer pasted passing output: format:check, typecheck, lint, npm test (24 of 24: 15 unit, 9 smoke), build (CSS 23.70 kB, JS 394.55 kB). Committed as c24f354 and pushed to master.                                                                   |
-| 9      | Local persistence layer                                        | Not Verified | Code generated: idb and fake-indexeddb dependencies, src/types/records.ts, src/lib/db (database, errors, repositories), and 2 test files (16 new tests). Awaiting developer output from npm install, format:check, typecheck, lint, npm test and build. |
+| Prompt | Title                                                          | Status    | Reason                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------ | -------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1      | Project Setup and UI Foundation                                | Completed | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed.                                                                                                                                                                                                                                                                                                    |
+| 2      | Install styling and UI kit                                     | Completed | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed. Committed as 8bc208f.                                                                                                                                                                                                                                                                 |
+| 3      | Routing and global state scaffolding                           | Completed | react-router and zustand installed. Typecheck, lint, build passed. Browser checks passed. Committed as fcfdf57.                                                                                                                                                                                                                                                                            |
+| 4      | Application layout and responsive navigation                   | Completed | Typecheck, lint, build passed. Responsive, focus trap, Escape, route-change close checks passed. Committed as 2c236f5.                                                                                                                                                                                                                                                                     |
+| 5      | Theme management                                               | Completed | Typecheck, lint, build passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7.                                                                                                                                                                                                                                                                       |
+| 6      | Placeholder pages and empty states                             | Completed | Typecheck, lint, build passed. Browser checks passed. Committed as cc1056a.                                                                                                                                                                                                                                                                                                                |
+| 7      | Verification checkpoint 1: testing setup and foundation review | Completed | Developer pasted passing output: format:check, typecheck, lint, build, npm test (9 of 9), npm run test:e2e (1 of 1, Chromium). Committed as 640d62b.                                                                                                                                                                                                                                       |
+| 8      | Document data model                                            | Completed | Developer pasted passing output: format:check, typecheck, lint, npm test (24 of 24), build (CSS 23.70 kB, JS 394.55 kB). Committed as c24f354.                                                                                                                                                                                                                                             |
+| 9      | Local persistence layer                                        | Completed | Developer pasted passing output: npm install idb 8.0.4 and fake-indexeddb 6.2.8, format:check, typecheck, lint, npm test (40 of 40: 31 unit, 9 smoke), build (CSS 23.70 kB, JS 394.55 kB). Committed as f58cb87 and pushed to master. Build output identical to Prompt 8 is expected because no app screen imports the persistence layer yet. A second build run was requested to confirm. |
 
 Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 
@@ -129,7 +129,7 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 - Prompt 6: Home page with two working links. Seven section pages each show an h1, a purpose line and a disabled CTA with a note. Settings keeps the working Appearance card.
 - Prompt 7: Vitest with jsdom and Testing Library, nine smoke tests (one per route), Playwright e2e test for home to editor in Chromium.
 - Prompt 8: Document model types with a discriminated element union and schemaVersion 1. createDocument, createTextRun, computeWordBoundaries and seedFromId. JSON serialise and parse with schemaVersion check and structural validation.
-- Prompt 9 (unverified): IndexedDB repository layer with four object stores, lazy shared connection, migration runner, typed StorageError, validation on read and write, and get, put, delete, list and queryByUpdatedAt for every store. Assets stored as Blobs. Document records validated by the Prompt 8 parser.
+- Prompt 9: IndexedDB repository layer with four object stores, lazy shared connection, migration runner, typed StorageError, validation on read and write, and get, put, delete, list and queryByUpdatedAt for every store. Assets stored as Blobs. Document records validated by the Prompt 8 parser. Not yet used by any screen.
 
 ## Files created
 
@@ -141,7 +141,7 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 - Prompt 6 (commit cc1056a): src/components/EmptyState.tsx, and seven feature pages under src/features.
 - Prompt 7 (commit 640d62b): tests/setup.ts, tests/smoke/routes.test.tsx, tests/e2e/navigation.spec.ts, playwright.config.ts.
 - Prompt 8 (commit c24f354): src/types/document.ts, src/engine/model/createDocument.ts, src/engine/model/serialize.ts, tests/unit/document-model.test.ts.
-- Prompt 9 (unverified): src/types/records.ts, src/lib/db/errors.ts, src/lib/db/database.ts, src/lib/db/repositories/validation.ts, createRepository.ts, documentRepository.ts, templateRepository.ts, profileRepository.ts, assetRepository.ts, index.ts, tests/unit/db/repositories.test.ts, tests/unit/db/migration.test.ts.
+- Prompt 9 (commit f58cb87): src/types/records.ts, src/lib/db/errors.ts, src/lib/db/database.ts, src/lib/db/repositories/validation.ts, createRepository.ts, documentRepository.ts, templateRepository.ts, profileRepository.ts, assetRepository.ts, index.ts, tests/unit/db/repositories.test.ts, tests/unit/db/migration.test.ts.
 
 ## Files modified
 
@@ -152,8 +152,8 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 - Prompt 6: src/app/router.tsx, src/features/settings/SettingsPage.tsx.
 - Housekeeping (commit e0492ab): PROJECT_STATE.md (reformatted, versions corrected).
 - Prompt 7 (commit 640d62b): src/app/router.tsx (exports appRoutes), vite.config.ts (Vitest block), tsconfig.json, eslint.config.js, .gitignore, .prettierignore, package.json, package-lock.json.
-- Prompt 8 (commit c24f354): src/types/index.ts, vite.config.ts (test.include set to tests/**/*.test.{ts,tsx}), PROJECT_STATE.md.
-- Prompt 9 (unverified): src/types/index.ts (adds re-export of records types), package.json and package-lock.json (idb and fake-indexeddb added).
+- Prompt 8 (commit c24f354): src/types/index.ts, vite.config.ts (test.include), PROJECT_STATE.md.
+- Prompt 9 (commit f58cb87): src/types/index.ts (adds records re-export), package.json and package-lock.json (idb and fake-indexeddb added), tests/setup.ts (binds globalThis.Blob and window.Blob to Node's Blob for fake-indexeddb), src/lib/db/errors.ts (checks error.name directly so cross-realm DOMExceptions map correctly), src/lib/db/database.ts (transaction.done.catch handler during upgrade), src/lib/db/repositories/assetRepository.ts (Blob handling adjusted during debugging).
 
 ## Files deleted
 
@@ -162,34 +162,38 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 ## Latest results (as supplied by developer)
 
 - Housekeeping (commit e0492ab): format:check PASS, typecheck PASS, lint PASS, build PASS (CSS 23.68 kB, JS 394.55 kB).
-- Prompt 7 (commit 640d62b): format:check PASS, typecheck PASS, lint PASS, build PASS (CSS 23.68 kB, JS 394.55 kB), npm test PASS (9 of 9), npm run test:e2e PASS (1 of 1, Chromium).
-- Prompt 8 (commit c24f354): format:check PASS, typecheck PASS, lint PASS, npm test PASS (24 of 24: 15 unit, 9 smoke), build PASS (CSS 23.70 kB, JS 394.55 kB).
-- Prompt 9: no output supplied yet.
+- Prompt 7 (commit 640d62b): format:check PASS, typecheck PASS, lint PASS, build PASS, npm test PASS (9 of 9), npm run test:e2e PASS (1 of 1, Chromium).
+- Prompt 8 (commit c24f354): format:check PASS, typecheck PASS, lint PASS, npm test PASS (24 of 24), build PASS (CSS 23.70 kB, JS 394.55 kB).
+- Prompt 9 (commit f58cb87): idb 8.0.4 and fake-indexeddb 6.2.8 installed. format:check PASS, typecheck PASS, lint PASS, npm test PASS (40 of 40: document-model 15, migration 3, repositories 13, routes 9), build PASS (CSS 23.70 kB, JS 394.55 kB). The first build attempt returned an API 502 error and was rerun.
 - Prompts 1 to 6: as recorded in the Prompt status table above.
 
 ## Phase 1 foundation review
 
 | #   | Item                                    | Status                                                   |
 | --- | --------------------------------------- | -------------------------------------------------------- |
-| 1   | Scaffold, strict TypeScript, Vite build | Pass (build re-verified in Prompts 7 and 8)              |
-| 2   | ESLint engine-isolation, Prettier       | Pass (lint and format re-verified in Prompts 7 and 8)    |
-| 3   | Tailwind 3.4, PostCSS, shadcn/ui        | Pass (build re-verified in Prompts 7 and 8)              |
+| 1   | Scaffold, strict TypeScript, Vite build | Pass (build re-verified in Prompts 7, 8 and 9)           |
+| 2   | ESLint engine-isolation, Prettier       | Pass (lint and format re-verified in Prompts 7 to 9)     |
+| 3   | Tailwind 3.4, PostCSS, shadcn/ui        | Pass (build re-verified in Prompts 7 to 9)               |
 | 4   | Routing for 8 sections plus 404         | Pass (9 of 9 smoke tests)                                |
 | 5   | Zustand UI and theme stores             | Pass (smoke tests load both stores)                      |
 | 6   | Responsive app shell and navigation     | Pass (e2e navigation test, Chromium)                     |
 | 7   | Light, dark and system theme            | Pass from Prompt 5 manual checks. No automated test yet. |
 | 8   | Placeholder pages, one h1 each          | Pass (9 of 9 smoke tests)                                |
-| 9   | Unit and smoke test tooling             | Pass (Prompts 7 and 8)                                   |
+| 9   | Unit and smoke test tooling             | Pass (Prompts 7 to 9)                                    |
 | 10  | E2E tooling (Playwright, Chromium)      | Pass (Prompt 7)                                          |
 
 ## Known bugs and unresolved issues
 
-- Prompt 9 has not been run. Likely points of failure: the asset Blob round trip under jsdom (a DataCloneError would mean fake-indexeddb cannot clone the jsdom Blob; the fix is to move that test into a file with `// @vitest-environment node`), strict TypeScript checks on the idb calls, and the `IDBKeyRange` global in tests.
+- Commit history: the Prompt 9 push went from `57457de` to `f58cb87`. Commit `57457de` and any commits between `c24f354` and `57457de` are not in the project record. Confirm with `git log --oneline -6`.
+- Build verification: the Prompt 9 build output matches the Prompt 8 output byte for byte (same hashes and sizes). This is expected because the persistence code is not yet imported by any screen, but a second `npm run build` should be pasted to confirm the bundle is current.
 - The database is at version 1 and has no real version 2 migration. The v1 to v2 test uses a migration defined inside the test file.
-- The `blocking` handler closes the connection when another tab upgrades. Any repository call made afterwards reconnects. A connection request that is still pending when `close()` runs can leak its connection.
-- The `blocked` event for an upgrade that waits on another open connection is not reported as an error. An upgrade can wait indefinitely if another tab does not respond.
-- The `updatedAt` index depends on canonical ISO strings. Records written by other code paths must use `toISOString()`, or they will be rejected.
-- The validators check record shape but not business rules, such as whether a sample asset id actually exists in the assets store.
+- The `blocking` handler closes the connection when another tab upgrades. Any repository call made afterwards reconnects. A connection request still pending when `close()` runs can leak its connection.
+- A blocked upgrade (another tab holding the database open) is not reported as an error and can wait indefinitely.
+- `transaction.done.catch` in database.ts silences the transaction promise during upgrades. The openDB rejection still reaches the caller, but any future upgrade logic should be checked for silent failures.
+- tests/setup.ts binds globalThis.Blob to Node's Blob. This affects every test file, including the smoke tests. Re-check it if a browser-only Blob API is used in a test.
+- errors.ts identifies DOMExceptions by error.name, not instanceof, because of cross-realm errors under jsdom. Any new error mapping should follow the same pattern.
+- The updatedAt index depends on canonical ISO strings. Records written by other code paths must use toISOString(), or they are rejected.
+- The validators check record shape but not business rules, such as whether a sample asset id exists in the assets store.
 - No cross-store consistency: deleting an asset does not update profiles that reference it.
 - E2E test runs in Chromium only. Firefox and WebKit are not configured.
 - No automated tests for theme switching or responsive layout. Covered only by manual checks from Prompts 4 and 5.
@@ -202,7 +206,7 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 - Vite base is './'. Decide base '/' or not when deploying to a domain root.
 - Sidebar state and toasts are not persisted across reloads. Only the theme is persisted.
 - node-domexception deprecation warning comes from a transitive dependency of the shadcn CLI. Can be ignored.
-- Prompts 2 to 6 were verified from written descriptions of browser output, not screenshots.
+- Prompts 2 to 9 were verified from written descriptions of browser output, not screenshots.
 - Playwright's webServer rebuilds the app on every e2e run. This adds a few seconds.
 - Image bytes are not yet wired to any feature. `assetId` references are unused until the asset-using features exist.
 
@@ -227,12 +231,12 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 - Theme persistence uses a plain localStorage string, so the pre-paint script in index.html can read it. Key and values must match between index.html and src/store/themeStore.ts.
 - vite.config.ts sets Vitest's test.include to tests/**/*.test.{ts,tsx}.
 - jsdom has no matchMedia. tests/setup.ts provides a stub.
-- Tests that use IndexedDB import 'fake-indexeddb/auto' and give each test its own database name, so tests do not share state.
+- Tests that use IndexedDB import 'fake-indexeddb/auto' and give each test its own database name.
 - Prompts 2 to 9 were verified from written descriptions, not screenshots. Ask for a screenshot if a later prompt depends on exact layout or colour.
 
 ## Exact next prompt number
 
-- 9 (still open until Prompt 9 is verified; then move to 10)
+- 10 (Prompt 10 text has not been supplied in this chat. Paste its full text to begin.)
 
 ## Instructions for continuing in another Claude account
 
