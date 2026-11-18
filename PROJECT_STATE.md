@@ -83,7 +83,7 @@ calibre text to handwriting/   (project root)
     unit/document-model.test.ts (15 cases)
     unit/db/repositories.test.ts (13 cases, includes localStorage check)
     unit/db/migration.test.ts    (3 cases)
-    unit/paper/geometry.test.ts  (Prompt 10, 9 cases)
+    unit/paper/geometry.test.ts  (Prompt 10, 12 cases)
     unit/paper/rulings.test.ts   (Prompt 10, 11 cases)
     e2e/navigation.spec.ts   (home to editor, Chromium)
   dist/                      (build output, gitignored)
@@ -105,22 +105,22 @@ Paper geometry: pure functions in src/engine/paper with no canvas or DOM calls. 
 
 ## Last successfully completed prompt
 
-- Prompt 9: Local persistence layer (verified, commit f58cb87; PROJECT_STATE.md recorded in commit 6d281e3)
+- Prompt 10: Paper template system (verified, commit 8869364)
 
 ## Prompt status
 
-| Prompt | Title                                                          | Status       | Reason                                                                                                                                                                                                                               |
-| ------ | -------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1      | Project Setup and UI Foundation                                | Completed    | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed.                                                                                                                                              |
-| 2      | Install styling and UI kit                                     | Completed    | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed. Committed as 8bc208f.                                                                                                           |
-| 3      | Routing and global state scaffolding                           | Completed    | react-router and zustand installed. Typecheck, lint, build passed. Browser checks passed. Committed as fcfdf57.                                                                                                                      |
-| 4      | Application layout and responsive navigation                   | Completed    | Typecheck, lint, build passed. Responsive, focus trap, Escape, route-change close checks passed. Committed as 2c236f5.                                                                                                               |
-| 5      | Theme management                                               | Completed    | Typecheck, lint, build passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7.                                                                                                                 |
-| 6      | Placeholder pages and empty states                             | Completed    | Typecheck, lint, build passed. Browser checks passed. Committed as cc1056a.                                                                                                                                                          |
-| 7      | Verification checkpoint 1: testing setup and foundation review | Completed    | Developer pasted passing output: format:check, typecheck, lint, build, npm test (9 of 9), npm run test:e2e (1 of 1, Chromium). Committed as 640d62b.                                                                                 |
-| 8      | Document data model                                            | Completed    | Developer pasted passing output: format:check, typecheck, lint, npm test (24 of 24), build (CSS 23.70 kB, JS 394.55 kB). Committed as c24f354.                                                                                       |
-| 9      | Local persistence layer                                        | Completed    | Developer pasted passing output: npm install idb 8.0.4 and fake-indexeddb 6.2.8, format:check, typecheck, lint, npm test (40 of 40), build (CSS 23.70 kB, JS 394.55 kB). Committed as f58cb87. A second build gave identical output. |
-| 10     | Paper template system                                          | Not Verified | Code generated: src/engine/paper (types, errors, presets, geometry, rulings), src/engine/index.ts re-export, and 2 test files (20 new tests). Awaiting developer output from format:check, typecheck, lint, npm test and build.      |
+| Prompt | Title                                                          | Status    | Reason                                                                                                                                                                                                                               |
+| ------ | -------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1      | Project Setup and UI Foundation                                | Completed | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed.                                                                                                                                              |
+| 2      | Install styling and UI kit                                     | Completed | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed. Committed as 8bc208f.                                                                                                           |
+| 3      | Routing and global state scaffolding                           | Completed | react-router and zustand installed. Typecheck, lint, build passed. Browser checks passed. Committed as fcfdf57.                                                                                                                      |
+| 4      | Application layout and responsive navigation                   | Completed | Typecheck, lint, build passed. Responsive, focus trap, Escape, route-change close checks passed. Committed as 2c236f5.                                                                                                               |
+| 5      | Theme management                                               | Completed | Typecheck, lint, build passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7.                                                                                                                 |
+| 6      | Placeholder pages and empty states                             | Completed | Typecheck, lint, build passed. Browser checks passed. Committed as cc1056a.                                                                                                                                                          |
+| 7      | Verification checkpoint 1: testing setup and foundation review | Completed | Developer pasted passing output: format:check, typecheck, lint, build, npm test (9 of 9), npm run test:e2e (1 of 1, Chromium). Committed as 640d62b.                                                                                 |
+| 8      | Document data model                                            | Completed | Developer pasted passing output: format:check, typecheck, lint, npm test (24 of 24), build (CSS 23.70 kB, JS 394.55 kB). Committed as c24f354.                                                                                       |
+| 9      | Local persistence layer                                        | Completed | Developer pasted passing output: npm install idb 8.0.4 and fake-indexeddb 6.2.8, format:check, typecheck, lint, npm test (40 of 40), build (CSS 23.70 kB, JS 394.55 kB). Committed as f58cb87. A second build gave identical output. |
+| 10     | Paper template system                                          | Completed | Developer pasted passing output: format:check, typecheck, lint, npm test (63 of 63, 23 new paper tests), build (CSS 23.73 kB, JS 394.55 kB). Committed as 8869364.                                                                   |
 
 Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 
@@ -137,7 +137,7 @@ Note on status commits: `PROJECT_STATE.md` was updated to mark Prompts 7, 8 and 
 - Prompt 7: Vitest with jsdom and Testing Library, nine smoke tests (one per route), Playwright e2e test for home to editor in Chromium.
 - Prompt 8: Document model types with a discriminated element union and schemaVersion 1. createDocument, createTextRun, computeWordBoundaries and seedFromId. JSON serialise and parse with schemaVersion check and structural validation.
 - Prompt 9: IndexedDB repository layer with four object stores, lazy shared connection, migration runner, typed StorageError, validation on read and write, and get, put, delete, list and queryByUpdatedAt for every store. Assets stored as Blobs. Not yet used by any screen.
-- Prompt 10 (unverified): Pure paper geometry. Presets A4, A5 and US Letter. Millimetre to pixel conversion at a configurable DPI (default 150). Writable area in millimetres and pixels. Ruling lines for ruled, unruled, grid and margin styles, with configurable spacing, colour and stroke width. Full paper layout function for the renderer. Invalid geometry throws PaperGeometryError.
+- Prompt 10: Pure paper geometry. Presets A4, A5 and US Letter. Millimetre to pixel conversion at a configurable DPI (default 150). Writable area in millimetres and pixels. Ruling lines for ruled, unruled, grid and margin styles, with configurable spacing, colour and stroke width. Full paper layout function for the renderer. Invalid geometry throws PaperGeometryError.
 
 ## Files created
 
@@ -150,7 +150,7 @@ Note on status commits: `PROJECT_STATE.md` was updated to mark Prompts 7, 8 and 
 - Prompt 7 (commit 640d62b): tests/setup.ts, tests/smoke/routes.test.tsx, tests/e2e/navigation.spec.ts, playwright.config.ts.
 - Prompt 8 (commit c24f354): src/types/document.ts, src/engine/model/createDocument.ts, src/engine/model/serialize.ts, tests/unit/document-model.test.ts.
 - Prompt 9 (commit f58cb87): src/types/records.ts, src/lib/db/errors.ts, src/lib/db/database.ts, src/lib/db/repositories/validation.ts, createRepository.ts, documentRepository.ts, templateRepository.ts, profileRepository.ts, assetRepository.ts, index.ts, tests/unit/db/repositories.test.ts, tests/unit/db/migration.test.ts.
-- Prompt 10 (unverified): src/engine/paper/types.ts, src/engine/paper/errors.ts, src/engine/paper/presets.ts, src/engine/paper/geometry.ts, src/engine/paper/rulings.ts, tests/unit/paper/geometry.test.ts, tests/unit/paper/rulings.test.ts.
+- Prompt 10 (commit 8869364): src/engine/paper/types.ts, src/engine/paper/errors.ts, src/engine/paper/presets.ts, src/engine/paper/geometry.ts, src/engine/paper/rulings.ts, tests/unit/paper/geometry.test.ts, tests/unit/paper/rulings.test.ts.
 
 ## Files modified
 
@@ -163,7 +163,7 @@ Note on status commits: `PROJECT_STATE.md` was updated to mark Prompts 7, 8 and 
 - Prompt 7 (commit 640d62b): src/app/router.tsx (exports appRoutes), vite.config.ts (Vitest block), tsconfig.json, eslint.config.js, .gitignore, .prettierignore, package.json, package-lock.json. Status update in fe48a9f.
 - Prompt 8 (commit c24f354): src/types/index.ts, vite.config.ts (test.include). Status update in 57457de.
 - Prompt 9 (commit f58cb87): src/types/index.ts, package.json and package-lock.json, tests/setup.ts, src/lib/db/errors.ts, src/lib/db/database.ts, src/lib/db/repositories/assetRepository.ts. Status update in 6d281e3.
-- Prompt 10 (unverified): src/engine/index.ts (replaced: now re-exports the paper module; previously an empty placeholder).
+- Prompt 10 (commit 8869364): src/engine/index.ts (replaced: now re-exports the paper module; previously an empty placeholder).
 
 ## Files deleted
 
@@ -175,7 +175,7 @@ Note on status commits: `PROJECT_STATE.md` was updated to mark Prompts 7, 8 and 
 - Prompt 7 (commit 640d62b): format:check PASS, typecheck PASS, lint PASS, build PASS, npm test PASS (9 of 9), npm run test:e2e PASS (1 of 1, Chromium).
 - Prompt 8 (commit c24f354): format:check PASS, typecheck PASS, lint PASS, npm test PASS (24 of 24), build PASS (CSS 23.70 kB, JS 394.55 kB).
 - Prompt 9 (commit f58cb87): idb 8.0.4 and fake-indexeddb 6.2.8 installed. format:check PASS, typecheck PASS, lint PASS, npm test PASS (40 of 40), build PASS (CSS 23.70 kB, JS 394.55 kB). Second build identical.
-- Prompt 10: no output supplied yet.
+- Prompt 10 (commit 8869364): format:check PASS, typecheck PASS, lint PASS, npm test PASS (63 of 63, 23 new paper tests), build PASS (CSS 23.73 kB, JS 394.55 kB).
 - Prompts 1 to 6: as recorded in the Prompt status table above.
 
 ## Phase 1 foundation review
@@ -195,7 +195,7 @@ Note on status commits: `PROJECT_STATE.md` was updated to mark Prompts 7, 8 and 
 
 ## Known bugs and unresolved issues
 
-- Prompt 10 has not been run. Likely points of failure: the expected pixel values in the tests (for example the A5 and US Letter pixel sizes and the 1240 x 1754 A4 check depend on the rounding rule), the rulings test that checks evenly spaced rules within 0.02 px, and strict TypeScript on the spread-and-override fixtures.
+- US Letter preset height: 279 mm at 150 DPI is 1647.64 px, which rounds to 1648 px (test updated from 1650 px to match the rounding rule).
 - Pixel rounding: rule positions are rounded to two decimal places, while sheet and writable-area edges are rounded to whole pixels. A rule can therefore sit up to half a pixel from its theoretical position.
 - The presets use one shared ruling style (8 mm, light grey). Real presets for handwriting may need different defaults.
 - Presets are not yet linked to the persistence layer. A saved PaperTemplateRecord has no link to a preset id.
@@ -252,7 +252,7 @@ Note on status commits: `PROJECT_STATE.md` was updated to mark Prompts 7, 8 and 
 
 ## Exact next prompt number
 
-- 10 (still open until Prompt 10 is verified; then move to 11)
+- 11
 
 ## Instructions for continuing in another Claude account
 
