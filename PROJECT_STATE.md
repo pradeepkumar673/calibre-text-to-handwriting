@@ -25,6 +25,7 @@
   - eslint 9 (flat config with typescript-eslint, react-hooks and react-refresh), prettier 3
   - @types/node 26.6.6
   - Test tooling (Prompt 7): vitest 3.2.7, jsdom 26.1, @testing-library/react 16.3.3, @testing-library/dom 10.4.2, @playwright/test 1.65.1
+- No new packages in Prompt 8.
 - Not yet installed: Konva.js, PDF.js, pdf-lib, KaTeX, OpenCV.js. Deferred to later phases.
 
 ## Current architecture and folder structure
@@ -43,13 +44,19 @@ calibre text to handwriting/   (project root)
       App.tsx                (renders AppShell)
       router.tsx             (exports appRoutes and the browser router built from it)
       NotFoundPage.tsx
-    engine/index.ts          (must not import React; enforced by ESLint rule)
+    engine/                  (must not import React; enforced by ESLint rule)
+      index.ts
+      model/
+        createDocument.ts    (id factory, seedFromId, computeWordBoundaries, createTextRun, createDocument)
+        serialize.ts         (serializeDocument, parseDocument, DocumentFormatError, UnsupportedSchemaVersionError)
     types/
-      index.ts, ui.ts
+      index.ts               (re-exports ui and document types)
+      ui.ts                  (UI slice state, actions, Toast types)
+      document.ts            (DocumentModel, DocumentPage, DocumentElement union, settings, schemaVersion 1)
     store/
       index.ts, uiStore.ts, themeStore.ts
     components/
-      ui/                    (shadcn/ui owned source files: button, card, input, textarea, select, slider, dialog, dropdown-menu, tooltip, sheet)
+      ui/                    (shadcn/ui owned source files)
       layout/                (AppShell, Header, SideNav, MobileDrawer)
       EmptyState.tsx
     features/
@@ -60,6 +67,7 @@ calibre text to handwriting/   (project root)
   tests/
     setup.ts                 (matchMedia stub, Testing Library cleanup)
     smoke/routes.test.tsx    (one test per route, 9 cases)
+    unit/document-model.test.ts (Prompt 8, document model and serialisation)
     e2e/navigation.spec.ts   (home to editor, Chromium)
   dist/                      (build output, gitignored)
 ```
@@ -72,21 +80,24 @@ Layout: CSS grid, rows auto and minmax(0,1fr), so the header is fixed and the co
 
 Theme: mode is light, dark or system. The inline script in index.html sets the "dark" class before first paint. Stored under localStorage key calligraphewrite-theme.
 
+Document model: DocumentModel holds schemaVersion (currently 1), id, title, createdAt, updatedAt, paperTemplateId, styleId, settings and pages. Each page holds id, index and elements. Elements are a discriminated union on `kind`: textRun, stroke, shape, image, equation, table, annotation. Plain data only, no rendering concerns. Ids are random 96-bit hex strings from crypto.getRandomValues, injected through IdFactory so tests can use fixed ids.
+
 ## Last successfully completed prompt
 
 - Prompt 7: Verification checkpoint 1, testing setup and foundation review (verified, commit 640d62b)
 
 ## Prompt status
 
-| Prompt | Title                                                          | Status    | Reason                                                                                                                                                                                                 |
-| ------ | -------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1      | Project Setup and UI Foundation                                | Completed | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed.                                                                                                                |
-| 2      | Install styling and UI kit                                     | Completed | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed. Committed as 8bc208f.                                                                             |
-| 3      | Routing and global state scaffolding                           | Completed | react-router and zustand installed. Typecheck, lint, build passed. Browser checks passed. Committed as fcfdf57.                                                                                        |
-| 4      | Application layout and responsive navigation                   | Completed | Typecheck, lint, build passed. Responsive, focus trap, Escape, route-change close checks passed. Committed as 2c236f5.                                                                                 |
-| 5      | Theme management                                               | Completed | Typecheck, lint, build passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7.                                                                                   |
-| 6      | Placeholder pages and empty states                             | Completed | Typecheck, lint, build passed. Browser checks passed. Committed as cc1056a.                                                                                                                            |
-| 7      | Verification checkpoint 1: testing setup and foundation review | Completed | Developer pasted passing output: format:check, typecheck, lint, build (CSS 23.68 kB, JS 394.55 kB), npm test (9 of 9), npm run test:e2e (1 of 1, Chromium). Committed as 640d62b and pushed to master. |
+| Prompt | Title                                                          | Status       | Reason                                                                                                                                                                                                                                                       |
+| ------ | -------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1      | Project Setup and UI Foundation                                | Completed    | Scaffold committed as 35bbe5b. Typecheck, lint, build and dev server (HTTP 200) passed.                                                                                                                                                                      |
+| 2      | Install styling and UI kit                                     | Completed    | Tailwind 3.4 and PostCSS set up. 9 shadcn/ui components generated. Typecheck, lint and build passed. Committed as 8bc208f.                                                                                                                                   |
+| 3      | Routing and global state scaffolding                           | Completed    | react-router and zustand installed. Typecheck, lint, build passed. Browser checks passed. Committed as fcfdf57.                                                                                                                                              |
+| 4      | Application layout and responsive navigation                   | Completed    | Typecheck, lint, build passed. Responsive, focus trap, Escape, route-change close checks passed. Committed as 2c236f5.                                                                                                                                       |
+| 5      | Theme management                                               | Completed    | Typecheck, lint, build passed. Theme persistence, no-flash reload and OS-follow checks passed. Committed as 962ecb7.                                                                                                                                         |
+| 6      | Placeholder pages and empty states                             | Completed    | Typecheck, lint, build passed. Browser checks passed. Committed as cc1056a.                                                                                                                                                                                  |
+| 7      | Verification checkpoint 1: testing setup and foundation review | Completed    | Developer pasted passing output: format:check, typecheck, lint, build (CSS 23.68 kB, JS 394.55 kB), npm test (9 of 9), npm run test:e2e (1 of 1, Chromium). Committed as 640d62b and pushed to master.                                                       |
+| 8      | Document data model                                            | Not Verified | Code generated: src/types/document.ts, src/engine/model/createDocument.ts, src/engine/model/serialize.ts, tests/unit/document-model.test.ts, and types/index.ts re-export. Awaiting developer output from format:check, typecheck, lint, npm test and build. |
 
 Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 
@@ -99,6 +110,7 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 - Prompt 5: Light, dark and system theme modes, persisted to localStorage. Settings page with Appearance card.
 - Prompt 6: Home page with two working links. Seven section pages each show an h1, a purpose line and a disabled CTA with a note. Settings keeps the working Appearance card.
 - Prompt 7: Vitest with jsdom and Testing Library, nine smoke tests (one per route), Playwright e2e test for home to editor in Chromium, `test` and `test:e2e` scripts. `appRoutes` exported from router.tsx for memory-router tests.
+- Prompt 8 (unverified): Document model types with discriminated element union and schemaVersion 1. createDocument, createTextRun, computeWordBoundaries and seedFromId. JSON serialise and parse with schemaVersion check, structural validation, duplicate-id detection and word-boundary checks. Unit tests for round trip, unknown schemaVersion, missing schemaVersion, invalid JSON, duplicate ids, bad word boundaries, bad table sizes and unknown element kinds.
 
 ## Files created
 
@@ -109,6 +121,7 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 - Prompt 5 (commit 962ecb7): src/store/themeStore.ts, src/features/settings/ThemeSelect.tsx, src/features/settings/SettingsPage.tsx.
 - Prompt 6 (commit cc1056a): src/components/EmptyState.tsx, and seven feature pages under src/features.
 - Prompt 7 (commit 640d62b): tests/setup.ts, tests/smoke/routes.test.tsx, tests/e2e/navigation.spec.ts, playwright.config.ts.
+- Prompt 8 (unverified): src/types/document.ts, src/engine/model/createDocument.ts, src/engine/model/serialize.ts, tests/unit/document-model.test.ts.
 
 ## Files modified
 
@@ -119,6 +132,7 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 - Prompt 6: src/app/router.tsx, src/features/settings/SettingsPage.tsx.
 - Housekeeping (commit e0492ab): PROJECT_STATE.md (reformatted, versions corrected).
 - Prompt 7 (commit 640d62b): src/app/router.tsx (exports appRoutes), vite.config.ts (Vitest block), tsconfig.json (adds playwright.config.ts and tests), eslint.config.js (ignores and test-file rule), .gitignore, .prettierignore, package.json (scripts and devDependencies), package-lock.json (regenerated).
+- Prompt 8 (unverified): src/types/index.ts (adds re-export of document types).
 
 ## Files deleted
 
@@ -127,14 +141,9 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 ## Latest results (as supplied by developer)
 
 - Housekeeping (commit e0492ab): format:check PASS, typecheck PASS, lint PASS, build PASS (CSS 23.68 kB, JS 394.55 kB).
-- Prompt 7 (commit 640d62b, developer-supplied output):
-  - format:check: PASS
-  - typecheck: PASS (0 errors)
-  - lint: PASS (0 warnings or errors)
-  - build: PASS (CSS 23.68 kB, JS 394.55 kB)
-  - npm test: PASS, 9 of 9 tests (tests/smoke/routes.test.tsx)
-  - npm run test:e2e: PASS, 1 of 1 test (tests/e2e/navigation.spec.ts, Chromium)
+- Prompt 7 (commit 640d62b, developer-supplied output): format:check PASS, typecheck PASS (0 errors), lint PASS (0 warnings or errors), build PASS (CSS 23.68 kB, JS 394.55 kB), npm test PASS (9 of 9, tests/smoke/routes.test.tsx), npm run test:e2e PASS (1 of 1, Chromium).
 - Prompts 1 to 6: as recorded in the Prompt status table above.
+- Prompt 8: no output supplied yet.
 
 ## Phase 1 foundation review
 
@@ -153,19 +162,22 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 
 ## Known bugs and unresolved issues
 
+- Prompt 8 has not been run. Likely points of failure: the strict TypeScript checks inside the parser switch, lint rules on the test file, and the ordering of ids in the round-trip fixture.
 - E2E test runs in Chromium only. Firefox and WebKit are not configured.
 - No automated tests for theme switching or responsive layout. Covered only by manual checks from Prompts 4 and 5.
 - Tests in tests/ are included in tsconfig, so a type error in a test fails npm run build.
 - Header theme button is a placeholder (from Prompt 4). Wire it to the theme store or remove it in a later prompt.
 - Generated shadcn files (dialog.tsx, select.tsx, sheet.tsx) import icons from 'lucide-react' directly. Only in generated files.
 - tailwind-merge 3.7.0 targets Tailwind v4 class names; project uses Tailwind 3.4. Possible mis-merging of a few classes. Check visually when styling work begins.
+- Tailwind scans all of src/, including .ts files. Strings such as 'table' and 'image' in src/types/document.ts can generate unused utility rules. Harmless, but keep an eye on CSS size.
 - Deep links on a static host need an SPA fallback on the production host. Not configured yet.
 - Vite base is './'. Decide base '/' or not when deploying to a domain root.
 - Sidebar state and toasts are not persisted across reloads. Only the theme is persisted.
 - node-domexception deprecation warning comes from a transitive dependency of the shadcn CLI. Can be ignored.
 - Prompts 2 to 6 were verified from written descriptions of browser output, not screenshots.
-- Tailwind scans all of src/. A plain English word such as "table" in a source comment generates a utility class. Keep comments free of class-like words where it matters for CSS size.
 - Playwright's webServer rebuilds the app on every e2e run (npm run build, then vite preview). This adds a few seconds.
+- The document model has no migration path yet. Only schemaVersion 1 exists, so there is nothing to migrate from. Add one when version 2 is introduced.
+- Ids are random, so two documents created on different machines cannot collide in practice, but nothing checks uniqueness across documents. That is intended.
 
 ## Technical decisions and context
 
@@ -173,18 +185,21 @@ Housekeeping after Prompt 6 (not a numbered prompt): completed, commit e0492ab.
 - The shadcn CLI is pinned to the 2.x line (npx shadcn@2). Do not run npx shadcn@latest.
 - components.json was written by hand. Components are owned source files in src/components/ui.
 - Icons are imported from src/lib/icons.ts only in app code.
-- The engine folder remains protected from React imports.
-- react-router v7 is imported from 'react-router', not 'react-router-dom'.
-- Zustand selectors return a single value or a stable action each, never a new object.
+- The engine folder remains protected from React imports. Document model code lives in src/engine/model and imports only from src/types.
+- Document types use plain TypeScript interfaces. The element union is discriminated on `kind`, and the list of kinds lives in ELEMENT_KINDS, which the parser uses to validate.
+- The document type is named DocumentModel, not Document, to avoid shadowing the browser's Document type. The page type is DocumentPage and the element union is DocumentElement.
+- Serialisation writes schemaVersion as a top-level field. parseDocument rejects a missing or different version with UnsupportedSchemaVersionError, and every other structural problem with DocumentFormatError, naming the failing path.
+- Ids come from an injectable IdFactory. The default uses crypto.getRandomValues, which works on plain-HTTP LAN addresses. Tests inject a counter-based factory.
+- Text run seeds default to a FNV-1a hash of the element id, so rendering is deterministic for a given document.
+- Word boundaries are half-open ranges [start, end) of UTF-16 indices. They are computed from the text on creation and checked on parse.
 - Theme persistence uses a plain localStorage string, so the pre-paint script in index.html can read it. Key and values must match between index.html and src/store/themeStore.ts.
-- Test setup: Vitest is configured inside vite.config.ts with the jsdom environment. Unit and smoke tests live in tests/smoke. Playwright tests live in tests/e2e and are excluded from Vitest. Playwright runs against the production build via npm run build and vite preview on port 4173.
-- jsdom has no matchMedia. tests/setup.ts provides a stub so the theme store and app shell load under test.
-- The router's route list is exported as appRoutes. Tests mount it with createMemoryRouter. The browser router is built from the same list, so tests and the app use the same routes.
+- jsdom has no matchMedia. tests/setup.ts provides a stub.
+- The router's route list is exported as appRoutes. Tests mount it with createMemoryRouter.
 - Prompts 2 to 6 were verified from written descriptions, not screenshots. Ask for a screenshot if a later prompt depends on exact layout or colour.
 
 ## Exact next prompt number
 
-- Next prompt to run: 8. Prompt 8 text has not yet been supplied in this chat. The developer must paste the Prompt 8 section from the v3 guide.
+- 8 (still open until Prompt 8 is verified; then move to 9)
 
 ## Instructions for continuing in another Claude account
 
